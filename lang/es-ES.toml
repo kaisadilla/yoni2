@@ -1,0 +1,150 @@
+[value]
+not-configured = "Sin configurar"
+bool.true = ":white_check_mark: Sí"
+bool.false = ":x: No"
+
+[command]
+server-only = "Este comando solo se puede utilizar en un servidor."
+
+[error]
+internal = "Ha habido un error al procesar tu comando."
+not-yet-implemented = "Este comando aún no está disponible."
+
+[commands.help]
+name = "ayuda"
+desc = "Descubre quién es Yoni y cuáles son sus comandos."
+reply.title = "Ayuda"
+reply.body = '''
+# HOLA, SOY YONI
+
+Soy el esclavo y mensajero de Rigoberta. Estoy aquí para comunicar todo lo que ella diga.
+
+Como no tengo libertad de expresión y todo lo que digo viene de la boca de Rigoberta es posible que me oigas decir cosas como "Yoni vete a tomar por culo". Estaré en el canal de <#{channel_oratorio_id}> respondiendo vuestros rezos, en el de <#{channel_yoni_id}> respondiendo lo que me digáis y vuestros comandos y en el de <#{channel_comandos_id}> respondiendo a vuestros comandos.
+
+Dicho esto, estos son los comandos que tengo disponibles:
+ - `/help`: utilízalo cada vez que necesites volver a leer este mensaje.
+ - `/comandos`: para solo ver los comandos que tengo disponibles, sin la presentación.
+ - `/preséntate`: para leer la presentación de quién soy, sin los comandos.
+ - `/novedades`: consulta cuáles son las novedades de Yoni respecto a la anterior versión.
+ - `/insulta`: utilízalo para que insulte a alguien de tu parte.
+ - `/bendice`: para bendecir a quien tú quieras.
+ - `/metesela`: haz que le meta lo que tengo ahí colgado a quien tú me digas.
+ - `/habla`: para que diga algo.
+ - `/gif`: para que ponga alguno de mis gifs favoritos.
+ - `/record mierda`: consulta el número de días que lleva Mike sin decir cosas relacionadas a cagar y cuál es el récord.
+ - `/hilos bloquear`: bloquea a un usuario de los hilos de los que seas autor original en <#{channel_hilos_id}> para que no pueda escribir más ahí.
+ - `/hilos desbloquear`: desbloquea a un usuario de los hilos de los que seas autor original en <#{channel_hilos_id}>  para que pueda volver a escribir ahí.
+
+Recuerda que si encuentras un bug o tienes una sugerencia, puedes contactar con mi dueño (Rede944) creando un hilo en <#{channel_bugs_id}>.
+'''
+
+[commands.bless]
+name = "bendice"
+desc = "Haz que Yoni bendiga a alguien."
+person.name = "persona"
+person.desc = "Persona a la que Yoni va a bendecir."
+replies.default = [
+  "Rigoberta baja del cielo para bendecir a <@{target_id}>.",
+  "<@{target_id}> ha tocado a Mike y le ha curado el retraso mental. ¡Es un milagro! Seguro que alguien l@ ha bendecido...",
+  "Diosito te quiere, <@{target_id}>.",
+  "Que Rigoberta esté contigo, <@{target_id}>."
+]
+replies.self-bless = [
+  "¡Un ángel llamado <@{target_id}> ha bajado del cielo para bendecir a gente! Ostia, se ha bendecido a sí mism@. Menud@ gilipollas.",
+  "¡@ everyone a maldecir a <@{target_id}>! ¡Ha intentado bendecirse a sí mism@! **¡MUERTE AL/A LA BRUJ@!**",
+  "Mira qué mon@ <@{target_id}>. Se bendice a sí mism@. Se piensa que así va a dejar de ser tan retrasad@. En fin."
+]
+
+[commands.fuck]
+name = "métesela"
+desc = "Haz que Yoni le meta a alguien lo que tiene ahí colgando. ¿Por qué existe este comando?"
+person.name = "persona"
+person.desc = "Persona a la que Yoni se la va a meter."
+replies.default = [
+  "<@{target_id}> hoy se ha levantado con dolor de culo. Qué casualidad...",
+  "He abierto de patas a <@{target_id}>",
+  "Te la he metido doblada <@{target_id}>",
+  "Hoy <@{target_id}> pierde la virginidad. Ya iba tocando, qué está hecho un vejestorio."
+]
+replies.mike = [
+  "<@{target_id}> es lesbiano, a ése no se la meten."
+]
+replies.yoni = [
+  "A ese puto de <@{target_id}> hasta el fondo.",
+  "Que te follen <@{target_id}>",
+  "Toma <@{target_id}>, jódete, joputa."
+]
+
+[commands.leaderboard]
+name = "ránking"
+tomato.name = "tomates"
+tomato.desc = "¡El ránking de los usuarios más tomateados del servidor!"
+tomato.embed.title = "Ránking del Tomate de Solo_Mike"
+tomato.embed.bodies.empty = "Nadie ha recibido aún un sólo tomate :tomato:. ¿Qué estáis haciendo?"
+
+[commands.speak]
+name = "habla"
+desc = "Haz que Yoni diga algo."
+reply = [
+  "Qué coño dices",
+  "Sexo, sándwich, silencio, sumisa.",
+  "Miau, miau, miau.",
+  "**¡¡¡NO DIGAS HOLA!!!**",
+  "Enrique Morris, quítame los strikes, cabrón.",
+  "Endulzar las cosas te hace **GAY** como hombre."
+]
+
+[commands.thread]
+name = "hilos"
+block.name = "bloquear"
+block.desc = "Impide que un usuario escriba en este hilo, si eres moderador del hilo."
+block.user.name = "usuario"
+block.user.desc = "El usuario al que bloquear"
+block.replies.default = "<@{target_id}>, has sido bloqueado de este hilo por <@{author_id}>, seguramente por gilipollas. No podrás escribir más en este hilo."
+block.replies.target-is-mod = [
+  "¿Te crees que puedes bloquear a un mod, plebeyo?",
+  "Lo he consultado con Rigoberta y me ha sugerido que, si eso, te bloquee a ti.",
+  "Se empieza intentando bloquear a un mod y se acaba dando un golpe de estado.",
+  "No voy a bloquear a ese usuario. Lo que sí puede pasar es que te parta las piernas.",
+]
+block.replies.target-is-mike = [
+  "Sí, claro, y si quieres expulso a Mike del server también y te lo quedas tú.",
+  "Mike, has sido bloqueado de este hilo por un gilipollas que se cree que de verdad te voy a bloquear.",
+  "Mike, copia esto y pégalo en el chat: `neko warn <@{author_id}>`."
+]
+block.replies.target-is-yoni = [
+  "No voy a bloquearme a mí mismo.",
+  "Oye, vete a bloquear a tu puta madre.",
+  "Una más y traigo a Enrique Moris de vuelta.",
+  "¿Por qué harías eso? ¿Eres tonto?"
+]
+block.replies.not-a-thread = [
+  "¿Y si pruebas a usar el comando de hilos en... un hilo?",
+  "¿Qué parte de \"hilos\" te hace pensar que este comando se usa fuera de un hilo?",
+  "Prueba a leer la descripción, anda.",
+  "La subnormalidad de este usuario sólo se arregla tirándole tomates :tomato:."
+]
+block.replies.not-their-thread = [
+  "Este no es tu hilo. Vete a bloquear a tu hilo de mierda. A nadie le importará de todas formas",
+  "¿Qué haces intentando bloquear en el hilo de otra persona?",
+  "¿Alguna petición estúpida más? ¿Quizá que sigas teniendo pelo en 5 años?",
+  "Todo lo que creó Rigoberta tiene algún propósito. El tuyo es que nos podamos reír de alguien."
+]
+block.replies.civil-war = [
+  "Venga, va, no os bloqueéis entre vosotros, que aquí sois todos jefazos.",
+  "Eh... ¿estás seguro de que querías bloquear a esa persona?",
+  "Entre bomberos no se pisan la manguera. Los dos sois mods de este hilo.",
+]
+
+[events.last-mierda]
+title = "Mike lo ha vuelto a hacer."
+replies.default = "Días sin hablar de mierda: ~~{days}~~ => 0."
+replies.record = "Días sin hablar de mierda: ~~{days}~~ => 0 (¡Nuevo récord! Ha costado, ¿eh?)"
+replies.not-even-a-day = [
+  "Joder, Mike, no aguantas ni un día entero sin hablar de mierda.",
+  "Deberías cambiarle el nombre al canal a Solo_Mierda.",
+  "Sigue hablando de mierda y se te va a presentar Jimmy en casa.",
+  "Sí, Mike volvió a hablar de mierda.",
+  "¿La de no ser tan vulgar te la sabes?",
+  "¿Por qué Rigoberta escogió a un youtuber, literalmente, de mierda?"
+]

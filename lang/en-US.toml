@@ -1,0 +1,32 @@
+# As of now, the English translation doesn't have all content (and I have no
+# plans to do so for obvious reasons). If es-ES is defined as the default lang
+# in .env, any key missing here will use its equivalent in es-ES.toml instead.
+
+[value]
+not-configured = "Not configured"
+bool.true = ":white_check_mark: Yes"
+bool.false = ":x: No"
+
+[command]
+server-only = "This command can only be used in a server."
+
+[error]
+internal = "There was an error while processing your request."
+not-yet-implemented = "This command isn't available yet."
+
+[commands.help]
+name = "help"
+desc = "Descubre quién es Yoni y cuáles son sus comandos."
+
+[commands.bless]
+name = "bless"
+desc = "Make Yoni bless someone."
+person.name = "person"
+person.desc = "Person to bless."
+
+[commands.fuck]
+name = "fuck"
+desc = "Make Yoni stick his tool into someone... why does this command even exist?"
+
+[commands.speak]
+name = "speak"
