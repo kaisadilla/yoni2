@@ -4,6 +4,8 @@ use sqlx::sqlite::SqliteConnectOptions;
 use sqlx::{SqlitePool, query_scalar};
 use std::str::FromStr;
 
+const SECONDS_PER_DAY: i64 = 86_400;
+
 pub struct Store {
   db: SqlitePool,
 }
@@ -186,8 +188,6 @@ impl Store {
     guild: GuildId,
     usr: UserId,
   ) -> Result<Option<(i64, bool)>> {
-    const DAY: i64 = 86_400;
-
     let guild = i64::try_from(guild.get())?;
     let usr = i64::try_from(usr.get())?;
 
@@ -228,7 +228,7 @@ impl Store {
       return Ok(None);
     };
 
-    let days = now.saturating_sub(last) / DAY;
+    let days = now.saturating_sub(last) / SECONDS_PER_DAY;
     let is_new_record = days > record;
 
     sqlx::query(
@@ -252,6 +252,41 @@ impl Store {
     tx.commit().await?;
 
     Ok(Some((days, is_new_record)))
+  }
+
+  /// Returns a tuple where the first item represents the user's record of
+  /// mierdaless days and the second item represents their current streak (also
+  /// in days)
+  pub async fn get_mierda_stats(
+    &self,
+    guild: GuildId,
+    usr: UserId,
+  ) -> Result<Option<(i64, i64)>> {
+    let guild = i64::try_from(guild.get())?;
+    let usr = i64::try_from(usr.get())?;
+
+    let res: Option<(i64, i64)> = sqlx::query_as(
+      r#"
+        SELECT last_mierda, record_mierda
+        FROM user_stats
+        WHERE guild_id = ? AND user_id = ?
+      "#,
+    )
+    .bind(guild)
+    .bind(usr)
+    .fetch_optional(&self.db)
+    .await?;
+
+    let Some((last, record)) = res else {
+      return Ok(None);
+    };
+
+    let now: i64 =
+      sqlx::query_scalar("SELECT unixepoch()").fetch_one(&self.db).await?;
+
+    let streak = now.saturating_sub(last) / SECONDS_PER_DAY;
+
+    Ok(Some((record, streak)))
   }
 
   pub async fn add_tomato(&self, guild: GuildId, usr: UserId) -> Result<i64> {

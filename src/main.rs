@@ -10,6 +10,7 @@ use poise::{
   Command, Framework, FrameworkError, FrameworkOptions, PrefixFrameworkOptions,
 };
 use std::borrow::Cow;
+use std::sync::Arc;
 use tracing::{debug, error, info, trace, warn};
 use tracing_subscriber::EnvFilter;
 
@@ -40,7 +41,7 @@ async fn main() -> Result<(), Error> {
 
   let intents =
     GatewayIntents::non_privileged() | GatewayIntents::MESSAGE_CONTENT;
-  let i18n = I18n::load(config.default_lang.clone());
+  let i18n = Arc::new(I18n::load(config.default_lang.clone()));
 
   let mut commands = build_command_array();
 

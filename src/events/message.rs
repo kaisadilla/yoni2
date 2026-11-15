@@ -1,22 +1,31 @@
 use crate::cmd::util::Data;
+use crate::util::{is_thread, tomato_bad_command};
 use ab_glyph::FontArc;
 use image::{ImageFormat, Rgba};
 use imageproc::drawing::{draw_text_mut, text_size};
 use poise::serenity_prelude::{
-  Context, CreateAttachment, CreateEmbed, CreateMessage, Message,
+  Context, CreateAttachment, CreateEmbed, CreateMessage, GuildChannel, GuildId,
+  Message,
 };
 use regex::Regex;
 use std::sync::OnceLock;
-use tracing::{error, info};
+use tracing::{debug, error, info};
 
 pub async fn message(data: &Data, ctx: &Context, message: &Message) {
-  if message.author.id == data.config.user_mike_id {
-    check_mike_mierda(data, ctx, message).await;
-  }
+  check_mike_mierda(data, ctx, message).await;
+  check_thread_msg(data, ctx, message).await;
 }
 
+/// If the message given comes from USER_MIKE_ID and talks about mierda,
+/// updates their mierda timestamp and sends them a message congratulating them
+/// for their shittiness.
 async fn check_mike_mierda(data: &Data, ctx: &Context, msg: &Message) {
-  info!("Checking mike mierda.");
+  if msg.author.id != data.config.user_mike_id {
+    return;
+  }
+
+  debug!("Checking potential mierda message.");
+
   const KW: [&str; 7] =
     ["cag", "mierd", "diarre", "defeca", "hece", "hez", "caca"];
 
@@ -24,6 +33,12 @@ async fn check_mike_mierda(data: &Data, ctx: &Context, msg: &Message) {
     return;
   };
   let content = msg.content.to_lowercase();
+
+  if msg.content.contains("yoni record mierda")
+    || msg.content.contains("yoni récord mierda")
+  {
+    return;
+  }
 
   // Check whether the user is talking about mierda.
   let has_kw = KW
@@ -51,7 +66,8 @@ async fn check_mike_mierda(data: &Data, ctx: &Context, msg: &Message) {
     };
 
     let Ok(Ok(img)) =
-      tokio::task::spawn_blocking(move || generate_last_img(15)).await
+      tokio::task::spawn_blocking(move || generate_last_img(time_since_last))
+        .await
     else {
       error!("Failed to generate image for last-mierda.");
       return;
@@ -91,17 +107,20 @@ async fn check_mike_mierda(data: &Data, ctx: &Context, msg: &Message) {
   }
 }
 
+/// Returns the regex for the word "culo".
 fn regex_culo() -> &'static Regex {
   static REGEX: OnceLock<Regex> = OnceLock::new();
 
   REGEX.get_or_init(|| Regex::new(r"(?i)\bculo\b").unwrap())
 }
 
+/// Generates an image of The Simpsons replacing the number in a poster for
+/// "days without mierda".
 fn generate_last_img(days: i64) -> anyhow::Result<Vec<u8>> {
   const TEMPLATE: &[u8] = include_bytes!("../../assets/img/last_mierda.png");
   const FONT: &[u8] = include_bytes!("../../assets/font/arial.ttf");
 
-  const TEXT_CENTER_X: i32 = 107;
+  const TEXT_CENTER_X: i32 = 113;
   const TEXT_CENTER_Y: i32 = 127;
   const FONT_SIZE: f32 = 100.0;
 
@@ -126,4 +145,55 @@ fn generate_last_img(days: i64) -> anyhow::Result<Vec<u8>> {
   image::DynamicImage::ImageRgba8(img).write_to(&mut out, ImageFormat::Png)?;
 
   Ok(out.into_inner())
+}
+
+async fn check_thread_msg(data: &Data, ctx: &Context, msg: &Message) {
+  let Some(guild) = msg.guild_id else {
+    return;
+  };
+
+  let Some(chan) =
+    msg.channel_id.to_channel(&ctx).await.ok().and_then(|c| c.guild())
+  else {
+    return;
+  };
+
+  if is_thread(&chan) == false {
+    return;
+  }
+
+  if check_usr_is_blocked(data, ctx, msg, guild, chan).await {
+    return;
+  }
+}
+
+/// Checks whether the user that wrote the comment is blocked in the thread
+/// given, and deletes their comment if so. Returns true if the message was
+/// deleted
+async fn check_usr_is_blocked(
+  data: &Data,
+  ctx: &Context,
+  msg: &Message,
+  guild: GuildId,
+  chan: GuildChannel,
+) -> bool {
+  if data.store.is_blocked_in_thread(guild, chan.id, msg.author.id).await.ok()
+    == Some(false)
+  {
+    return false;
+  }
+
+  debug!(
+    usr_id = %msg.author.id,
+    usr_name = %msg.author.name,
+    thread_id = %chan.id,
+    thread_name = %chan.name,
+    msg_id = %msg.id,
+    msg_content = %msg.content,
+    "Message from blocked user deleted."
+  );
+
+  msg.delete(&ctx).await.ok();
+
+  true
 }

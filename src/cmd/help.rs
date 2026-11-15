@@ -1,20 +1,18 @@
-use crate::cmd::util::{Context, Error, interaction_locale};
+use crate::cmd::util::{CmdContext, CmdContextExt, Error, interaction_locale};
 use poise::CreateReply;
 use poise::serenity_prelude::{Colour, CreateEmbed};
 
 #[poise::command(slash_command, rename = "help")]
-pub async fn help(ctx: Context<'_>) -> Result<(), Error> {
-  let locale = interaction_locale(&ctx);
+pub async fn help(ctx: CmdContext<'_>) -> Result<(), Error> {
   let config = &ctx.data().config;
-  let i18n = &ctx.data().i18n;
+  let l = ctx.loc().await;
 
   ctx
     .send(
       CreateReply::default().embed(
         CreateEmbed::new()
-          .title(i18n.t(locale, "commands.help.reply.title"))
-          .description(i18n.f(
-            locale,
+          .title(l.t("commands.help.reply.title"))
+          .description(l.fmt(
             "commands.help.reply.body",
             &[
               ("channel_bugs_id", &config.channel_bugs_id),

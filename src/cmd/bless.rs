@@ -1,4 +1,4 @@
-use crate::cmd::util::{Context, Error, interaction_locale};
+use crate::cmd::util::{CmdContext, CmdContextExt, Error, interaction_locale};
 use poise::serenity_prelude::Member;
 
 #[poise::command(
@@ -7,18 +7,16 @@ use poise::serenity_prelude::Member;
   rename = "bless",
   aliases("bendice")
 )]
-pub async fn bless(ctx: Context<'_>, person: Member) -> Result<(), Error> {
-  let locale = interaction_locale(&ctx);
+pub async fn bless(ctx: CmdContext<'_>, person: Member) -> Result<(), Error> {
+  let l = ctx.loc().await;
 
   let reply = if person.user.id == ctx.author().id {
-    ctx.data().i18n.f(
-      locale,
+    l.fmt(
       "commands.bless.replies.self-bless",
       &[("target_id", &person.user.id.to_string())],
     )
   } else {
-    ctx.data().i18n.f(
-      locale,
+    l.fmt(
       "commands.bless.replies.default",
       &[("target_id", &person.user.id.to_string())],
     )

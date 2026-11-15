@@ -1,8 +1,11 @@
+use crate::cmd::util::CmdContext;
 use include_dir::Dir;
+use poise::serenity_prelude::GuildId;
 use rand::seq::IteratorRandom;
 use std::borrow::Cow;
 use std::collections::HashMap;
 use std::fmt::Display;
+use std::sync::Arc;
 
 pub static LANG_DIR: Dir =
   include_dir::include_dir!("$CARGO_MANIFEST_DIR/lang");
@@ -33,6 +36,22 @@ impl I18n {
     }
 
     Self { default_lang: default_lang.into(), languages }
+  }
+
+  /// Returns a locale with the language that should be used for the specific
+  /// context given. That is: the server's language if possible, else the bot's
+  /// default language.
+  pub async fn locale(self: &Arc<Self>, ctx: &CmdContext<'_>) -> Locale {
+    Locale {
+      i18n: self.clone(),
+      lang: match ctx {
+        CmdContext::Application(actx) => actx.interaction.guild_locale.clone(),
+        CmdContext::Prefix(_) => {
+          ctx.partial_guild().await.map(|g| g.preferred_locale)
+        },
+      }
+      .unwrap_or_else(|| self.default_lang.clone()),
+    }
   }
 
   /// Retrieves the string for the key and locale given if it exists. If the
@@ -131,5 +150,34 @@ impl I18n {
         })
         .collect(),
     )
+  }
+}
+
+/// Wraps an I18n instance and returns values from it with the language assigned
+/// to this Locale.
+pub struct Locale {
+  lang: String,
+  i18n: Arc<I18n>,
+}
+
+impl Locale {
+  /// Retrieves the definite string for the key and locale given.
+  pub fn t<'a>(&'a self, key: &'a str) -> &'a str {
+    self.i18n.t(&self.lang, key)
+  }
+
+  /// Retrieves the definite string for the key and locale given, applying
+  /// the arguments given to the string's template parameters.
+  pub fn fmt(
+    &self,
+    key: &str,
+    args: &[(&str, &(dyn Display + Send + Sync))],
+  ) -> String {
+    self.i18n.f(&self.lang, key, args)
+  }
+
+  /// Retrieves the definite string for a boolean value (true or false).
+  pub fn bool(&self, val: bool) -> &str {
+    self.i18n.b(&self.lang, val)
   }
 }

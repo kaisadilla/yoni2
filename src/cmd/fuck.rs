@@ -1,4 +1,4 @@
-use crate::cmd::util::{Context, Error, interaction_locale};
+use crate::cmd::util::{CmdContext, Error, interaction_locale};
 use poise::serenity_prelude::Member;
 
 #[poise::command(
@@ -7,7 +7,7 @@ use poise::serenity_prelude::Member;
   rename = "fuck",
   aliases("métesela")
 )]
-pub async fn fuck(ctx: Context<'_>, person: Member) -> Result<(), Error> {
+pub async fn fuck(ctx: CmdContext<'_>, person: Member) -> Result<(), Error> {
   let locale = interaction_locale(&ctx);
   let config = &ctx.data().config;
   let i18n = &ctx.data().i18n;

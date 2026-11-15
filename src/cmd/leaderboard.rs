@@ -1,15 +1,17 @@
-use crate::cmd::util::{Context, Error, check_guild_only, interaction_locale};
+use crate::cmd::util::{
+  CmdContext, Error, check_guild_only, interaction_locale,
+};
 use crate::util::get_guild_emoji;
 use poise::CreateReply;
 use poise::serenity_prelude::{Colour, CreateEmbed, Mentionable};
 
 #[poise::command(slash_command, subcommands("tomato"))]
-pub async fn leaderboard(_ctx: Context<'_>) -> Result<(), Error> {
+pub async fn leaderboard(_ctx: CmdContext<'_>) -> Result<(), Error> {
   Ok(())
 }
 
 #[poise::command(slash_command, rename = "tomato", check = "check_guild_only")]
-async fn tomato(ctx: Context<'_>) -> Result<(), Error> {
+async fn tomato(ctx: CmdContext<'_>) -> Result<(), Error> {
   let guild = ctx.guild_id().unwrap();
 
   let locale = interaction_locale(&ctx);
