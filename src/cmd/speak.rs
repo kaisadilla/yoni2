@@ -1,4 +1,5 @@
-use crate::cmd::util::{CmdContext, Error, interaction_locale};
+use crate::cmd::util::{CmdContext, CmdContextExt};
+use crate::util::Error;
 
 #[poise::command(
   slash_command,
@@ -7,9 +8,9 @@ use crate::cmd::util::{CmdContext, Error, interaction_locale};
   aliases("habla")
 )]
 pub async fn speak(ctx: CmdContext<'_>) -> Result<(), Error> {
-  let locale = interaction_locale(&ctx);
+  let l = ctx.loc().await;
 
-  let reply = ctx.data().i18n.t(locale, "commands.speak.reply");
+  let reply = l.t("commands.speak.reply");
 
   ctx.say(reply).await?;
 

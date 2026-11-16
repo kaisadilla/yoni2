@@ -1,4 +1,4 @@
-use crate::cmd::util::Data;
+use crate::util::Data;
 use poise::serenity_prelude::{Context, Reaction};
 
 pub async fn reaction_add(data: &Data, ctx: &Context, reaction: &Reaction) {

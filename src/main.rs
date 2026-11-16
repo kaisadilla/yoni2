@@ -1,9 +1,10 @@
 use crate::cmd::build_command_array;
-use crate::cmd::util::{Data, Error, interaction_locale, internal_error};
+use crate::cmd::util::CmdContextExt;
 use crate::config::Config;
 use crate::events::event_handler;
 use crate::i18n::I18n;
 use crate::store::Store;
+use crate::util::{Data, Error};
 use poise::builtins::register_globally;
 use poise::serenity_prelude::{Client, GatewayIntents};
 use poise::{
@@ -11,12 +12,15 @@ use poise::{
 };
 use std::borrow::Cow;
 use std::sync::Arc;
+use std::time::Duration;
 use tracing::{debug, error, info, trace, warn};
 use tracing_subscriber::EnvFilter;
 
 pub mod cmd;
 pub mod config;
+pub mod download;
 pub mod events;
+pub mod gif;
 pub mod i18n;
 pub mod store;
 pub mod util;
@@ -66,7 +70,12 @@ async fn main() -> Result<(), Error> {
 
         register_globally(ctx, &framework.options().commands).await?;
 
-        Ok(Data { config, i18n, store })
+        let client = reqwest::Client::builder()
+          .connect_timeout(Duration::from_secs(5))
+          .timeout(Duration::from_secs(20))
+          .build()?;
+
+        Ok(Data { config, i18n, store, client })
       })
     })
     .build();
@@ -111,13 +120,12 @@ fn localize_cmd(i18n: &I18n, command: &mut Command<Data, Error>, path: String) {
   }
 }
 
-async fn on_error(error: poise::FrameworkError<'_, Data, Error>) {
+async fn on_error(error: FrameworkError<'_, Data, Error>) {
   match error {
     FrameworkError::Command { error, ctx, .. } => {
       error!("Error in command '{}': {:?}", ctx.command().name, error);
 
-      let locale = interaction_locale(&ctx);
-      internal_error(&ctx, locale).await;
+      ctx.internal_error().await;
     },
     other => {
       if let Err(err) = poise::builtins::on_error(other).await {

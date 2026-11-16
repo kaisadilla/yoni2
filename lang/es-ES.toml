@@ -7,8 +7,14 @@ bool.false = ":x: No"
 server-only = "Este comando solo se puede utilizar en un servidor."
 
 [error]
-internal = "Ha habido un error al procesar tu comando."
-not-yet-implemented = "Este comando aún no está disponible."
+internal = [
+  "No sé qué he hecho pero la he cagado.",
+  "Ehm uhm... ¡mira lo que pone en el techo!\n\n\\*sale corriendo\\*",
+  "Rigoberta ha intervenido directamente y ha dicho que te jodan."
+]
+not-yet-implemented = [
+  "El vago de Rede aún no ha implementado esta función."
+]
 
 [commands.help]
 name = "ayuda"
@@ -79,6 +85,58 @@ replies.yoni = [
   "Toma <@{target_id}>, jódete, joputa."
 ]
 
+[commands.gif]
+name = "gif"
+desc = "Pídele a Yoni que envíe un GIF. A ver qué se le ocurre."
+replies.no-gifs = [
+  "Me he quedado sin ideas, lo siento.",
+  "Rigoberta dice que no te mereces un GIF.",
+  "Ahora envío el GIF, en cuanto te salgas del server."
+]
+replies.disobey = [
+  "No, para ti no hay GIFs.",
+  "Estás castigado sin GIFs.",
+  "No, envía tú un GIF.",
+  "Lo he consultado con Rigoberta y ha dicho que estaría más agusto si te sales del server.",
+  "Te confundiste, el botón para que envíe un GIF está en las opciones de Discord y se llama 'Borrar cuenta'.",
+  "Cada vez que entra un nuevo usuario en el servidor, bajas un puesto en el ránking de personas del servidor que me agradan.",
+  "Monaka el Pene."
+]
+
+[commands.gifs]
+name = "gifs"
+
+remove.name = "quitar"
+remove.desc = "Quita un GIF del repertorio de Yoni. Esto NO prohibe que se envíe el GIF en el servidor."
+remove.url.name = "url"
+remove.url.desc = "La url del gif a quitar."
+remove.success = [
+  "Vale, no vuelvo a enviar ese gif :point_right::point_left:",
+  "¿Tanto te jode ese gif?",
+  "Venga, yo lo quito, pero Rigoberta opina que te vas a quedar calvo.",
+  ""
+]
+
+forbid.name = "prohibir"
+forbid.desc = "Prohibe el uso del GIF dado en el servidor. Yoni no enviará este GIF."
+forbid.url.name = "url"
+forbid.url.desc = "La url del gif a prohibir."
+forbid.success = [
+  "Listo, al próximo que envíe esa basura lo mato.",
+  "Ese GIF no volverá a ver la luz del día.",
+  "Gif eliminado correctamente. Pd: payaso."
+]
+restore.name = "restaurar"
+restore.desc = "Levanta la prohibición sobre un GIF y permite que Yoni lo vuelva a enviar."
+restore.url.name = "url"
+restore.url.desc = "La url del gif a restaurar."
+restore.success = [
+  "Gracias por dejar de ser un snowflake y permitirme enviar eso de nuevo.",
+  "¿Ves como no era para tanto?",
+  "¿Qué, Mike te ha dicho que lo restaures?",
+  "Sólo porque sea yuri no significa que sea +18."
+]
+
 [commands.leaderboard]
 name = "ránking"
 tomato.name = "tomates"
@@ -97,9 +155,29 @@ mierda.embed.body = """
 """
 mierda.replies.not-yet-available = "Nah, hoy paso de mostrarlo. Pregunta mañana."
 
+[commands.say]
+name = "decir"
+desc = "Haz que Yoni diga lo que tú quieras."
+reply = [
+  "Para escribir esa gilipollez, podías no haber dicho nada.",
+  "Contractualmente estoy obligado a fingir que nuestros boosters no dicen chorradas",
+  "Felicidades por tan ingenioso mensaje.",
+  "Lo peor es que lo has escrito y te sientes orgulloso de haberlo hecho",
+  "¿Y si en vez de escribir estas chorradas, agarras la pala?",
+  "Por fin alguien escribe un buen mensaje. Es broma. Es una mierda de mensaje.",
+  "He leído mensajes mejores en el _Mein Kampf_.",
+  "Se acabó, voy a pedirle a Rede que elimine este comando.",
+]
+log.embed.title = "Mensaje enviado"
+log.embed.body = """
+{user_name} ({user_mention}) ha utilizado `/send_message`:
+> **Contenido**: {content}
+> **Enlace**: {message_link}
+"""
+
 [commands.speak]
 name = "habla"
-desc = "Haz que Yoni diga algo."
+desc = "Haz que Yoni empiece a hablar."
 reply = [
   "Qué coño dices",
   "Sexo, sándwich, silencio, sumisa.",
@@ -171,6 +249,8 @@ unblock.replies.not-their-thread = [
   "Todo lo que creó Rigoberta tiene algún propósito. El tuyo es que nos podamos reír de alguien."
 ]
 delete.name = "borrar"
+delete.target.name = "mensaje"
+delete.target.desc = "El mensaje que borrar."
 delete.replies.no-msg = [
   "¿Que borre el qué? ¿El servidor?"
 ]
@@ -184,6 +264,12 @@ delete.replies.not-a-mod = [
   "Bórrame esta.",
   "Cállate inútil, que no pintas nada en este hilo.",
   "La cara te voy a borrar."
+]
+delete.success = [
+  "Ya he borrado esa soplapollez.",
+  "Me he cargado ese mensaje tan estúpido.",
+  "Rigoberta está de acuerdo en que ese mensaje era una chorrada.",
+  "Mensaje borrado. Y si pudiese, borraría también a quien lo escribió."
 ]
 
 [events.last-mierda]

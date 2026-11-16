@@ -1,6 +1,5 @@
-use crate::cmd::util::{
-  CmdContext, Error, check_guild_only, interaction_locale,
-};
+use crate::cmd::util::{CmdContext, CmdContextExt};
+use crate::util::Error;
 use poise::CreateReply;
 use poise::serenity_prelude::{Colour, CreateEmbed};
 
@@ -20,12 +19,10 @@ pub async fn record(_ctx: CmdContext<'_>) -> Result<(), Error> {
   prefix_command,
   rename = "mierda",
   aliases("mierda"),
-  check = "check_guild_only"
+  guild_only
 )]
 pub async fn mierda(ctx: CmdContext<'_>) -> Result<(), Error> {
-  let locale = interaction_locale(&ctx);
-
-  let i18n = &ctx.data().i18n;
+  let l = ctx.loc().await;
 
   let Some(guild) = ctx.guild_id() else {
     return Ok(());
@@ -34,16 +31,13 @@ pub async fn mierda(ctx: CmdContext<'_>) -> Result<(), Error> {
   let Some(info) =
     ctx.data().store.get_mierda_stats(guild, ctx.author().id).await?
   else {
-    ctx
-      .say(i18n.t(locale, "commands.record.mierda.replies.not-yet-available"))
-      .await?;
+    ctx.say(l.t("commands.record.mierda.replies.not-yet-available")).await?;
     return Ok(());
   };
 
   let embed = CreateEmbed::new()
-    .title(i18n.t(locale, "commands.record.mierda.embed.title"))
-    .description(i18n.f(
-      locale,
+    .title(l.t("commands.record.mierda.embed.title"))
+    .description(l.fmt(
       "commands.record.mierda.embed.body",
       &[("record", &info.0), ("streak", &info.1)],
     ))

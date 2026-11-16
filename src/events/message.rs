@@ -1,5 +1,6 @@
-use crate::cmd::util::Data;
-use crate::util::{is_thread, tomato_bad_command};
+use crate::gif::{Gif, GifPHash, GifStatus};
+use crate::store::Store;
+use crate::util::{Data, GuildChannelExt, Hash, MessageExt};
 use ab_glyph::FontArc;
 use image::{ImageFormat, Rgba};
 use imageproc::drawing::{draw_text_mut, text_size};
@@ -9,11 +10,12 @@ use poise::serenity_prelude::{
 };
 use regex::Regex;
 use std::sync::OnceLock;
-use tracing::{debug, error, info};
+use tracing::{debug, error, info, warn};
 
 pub async fn message(data: &Data, ctx: &Context, message: &Message) {
   check_mike_mierda(data, ctx, message).await;
   check_thread_msg(data, ctx, message).await;
+  check_gif(data, ctx, message).await;
 }
 
 /// If the message given comes from USER_MIKE_ID and talks about mierda,
@@ -158,7 +160,7 @@ async fn check_thread_msg(data: &Data, ctx: &Context, msg: &Message) {
     return;
   };
 
-  if is_thread(&chan) == false {
+  if chan.is_thread() == false {
     return;
   }
 
@@ -196,4 +198,124 @@ async fn check_usr_is_blocked(
   msg.delete(&ctx).await.ok();
 
   true
+}
+
+async fn check_gif(data: &Data, ctx: &Context, msg: &Message) {
+  let Some(guild) = msg.guild_id else {
+    return;
+  };
+
+  let gifs = msg.gif_urls();
+  if gifs.is_empty() {
+    return;
+  }
+
+  for gif in gifs {
+    let status = match register_gif(&data.store, guild, gif).await {
+      Ok(status) => status,
+      Err(err) => {
+        error!(%err, url = %gif, "Error while trying to register GIF.");
+        continue;
+      },
+    };
+
+    if matches!(status, GifStatus::Banned) {
+      info!(gif_url = %gif, "Deleted message with banned GIF.");
+      msg.delete(&ctx).await.ok();
+
+      break;
+    }
+  }
+}
+
+async fn register_gif(
+  store: &Store,
+  guild: GuildId,
+  url: &str,
+) -> anyhow::Result<GifStatus> {
+  match store.get_gif_status_by_url(guild, url).await? {
+    Some(status) => Ok(status),
+    None => {
+      store.add_yoni_gif(guild, url, GifStatus::Allowed).await?;
+      debug!(%url, "Registered new GIF for Yoni.");
+
+      Ok(GifStatus::Allowed)
+    },
+  }
+}
+
+/// Registers this GIF in the store, if it isn't there already. Returns its
+/// status.
+async fn _register_gif_complex(
+  store: &Store,
+  client: &reqwest::Client,
+  guild: GuildId,
+  url: &str,
+) -> anyhow::Result<GifStatus> {
+  todo!();
+  let mut exact_hash: Option<Hash> = None;
+  let mut visual_hash: Option<Hash> = None;
+  let mut similarity_hash: Option<GifPHash> = None;
+
+  let status = match store.get_gif_status_by_url(guild, url).await? {
+    // The GIF url is in the store.
+    Some(status) => Some(status),
+    // New GIF, we try to identify it by its static hash.
+    None => {
+      debug!("Checking GIF by static hash.");
+
+      let gif = Gif::download(client, url).await?;
+
+      exact_hash = Some(gif.exact_hash());
+      let status =
+        store.get_gif_status_by_exact_hash(guild, exact_hash.unwrap()).await?;
+
+      match status {
+        // The GIF has been found in the store by its static hash.
+        Some(status) => Some(status),
+        // New GIF, we try to identify it by its visual hash.
+        None => {
+          debug!("Checking GIF by visual hash.");
+
+          visual_hash = Some(gif.visual_hash()?);
+          let status = store
+            .get_gif_status_by_visual_hash(guild, visual_hash.unwrap())
+            .await?;
+
+          match status {
+            // The GIF has been found in the store by its visual hash.
+            Some(status) => Some(status),
+            // New Gif, we try to identify it by its similarity hash.
+            None => {
+              debug!("Checking GIF by similarity hash.");
+
+              similarity_hash = Some(gif.similarity_hash()?);
+
+              None // TODO: Implement this.
+            },
+          }
+        },
+      }
+    },
+  };
+
+  Ok(match status {
+    Some(status) => status,
+    None => {
+      debug!(%url, "Registering new GIF for Yoni.");
+
+      store
+        .add_yoni_gif(
+          guild,
+          url,
+          //exact_hash.unwrap(),
+          //visual_hash.unwrap(),
+          //similarity_hash.unwrap(),
+          GifStatus::Allowed,
+        )
+        .await?;
+
+      GifStatus::Allowed
+    },
+  })
 }

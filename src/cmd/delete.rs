@@ -1,30 +1,59 @@
-use crate::cmd::util::{
-  CmdContext, CmdContextExt, Error, check_guild_only, interaction_locale,
-};
-use crate::util::{is_thread, is_thread_mod, tomato_bad_command};
+use crate::cmd::util::{CmdContext, CmdContextExt};
+use crate::i18n::Locale;
+use crate::util::{Error, GuildChannelExt};
 use poise::serenity_prelude::Message;
 use tracing::debug;
 
 #[poise::command(prefix_command, rename = "delete", aliases("borra"))]
-pub async fn delete(ctx: CmdContext<'_>) -> Result<(), Error> {
-  let CmdContext::Prefix(pctx) = ctx else {
-    return Ok(());
+pub async fn delete(
+  ctx: CmdContext<'_>,
+  target: Option<Message>,
+) -> Result<(), Error> {
+  let mut needs_response = true;
+
+  let target = match &target {
+    Some(target) => target,
+    None => {
+      let CmdContext::Prefix(pctx) = ctx else {
+        return Ok(());
+      };
+
+      needs_response = false;
+      // Delete the message containing this command.
+      pctx.msg.delete(ctx.serenity_context()).await?;
+
+      match &pctx.msg.referenced_message {
+        Some(msg) => msg,
+        None => return Ok(()),
+      }
+    },
   };
 
+  run_cmd(&ctx, &target, needs_response).await
+}
+
+#[poise::command(context_menu_command = "Borrar", guild_only)]
+pub async fn ctx_delete(
+  ctx: CmdContext<'_>,
+  target: Message,
+) -> Result<(), Error> {
+  run_cmd(&ctx, &target, true).await
+}
+
+async fn run_cmd(
+  ctx: &CmdContext<'_>,
+  replied_msg: &Message,
+  needs_response: bool,
+) -> Result<(), Error> {
   let l = ctx.loc().await;
-
-  let Some(replied_msg) = &pctx.msg.referenced_message else {
-    ctx.reply(l.t("commands.thread.delete.replies.no-msg")).await?;
-    return Ok(());
-  };
 
   let author = ctx.author().id;
   let chan = ctx.channel_id().to_channel(&ctx).await?.guild().unwrap();
 
   // Insult the author because this isn't a thread.
-  if is_thread(&chan) == false {
+  if chan.is_thread() == false {
     ctx.reply(l.t("commands.thread.delete.replies.not-a-thread")).await?;
-    tomato_bad_command(ctx).await?;
+    ctx.tomato_bad_command().await.ok();
 
     return Ok(());
   }
@@ -40,9 +69,9 @@ pub async fn delete(ctx: CmdContext<'_>) -> Result<(), Error> {
   }
 
   // Insult the author because they aren't a mod in the thread.
-  if is_thread_mod(&chan, &ctx.data().store, author).await == false {
+  if chan.is_thread_mod(&ctx.data().store, author).await == false {
     ctx.reply(l.t("commands.thread.delete.replies.not-a-mod")).await?;
-    tomato_bad_command(ctx).await?;
+    ctx.tomato_bad_command().await.ok();
 
     return Ok(());
   }
@@ -54,15 +83,11 @@ pub async fn delete(ctx: CmdContext<'_>) -> Result<(), Error> {
   );
   replied_msg.delete(ctx).await?;
 
-  Ok(())
-}
+  if needs_response == false {
+    return Ok(());
+  }
 
-#[poise::command(context_menu_command = "Borrar", check = "check_guild_only")]
-pub async fn ctx_delete(
-  ctx: CmdContext<'_>,
-  target: Message,
-) -> Result<(), Error> {
-  debug!("Context of deletion");
+  ctx.ephemeral(l.t("commands.thread.delete.success")).await?;
 
   Ok(())
 }

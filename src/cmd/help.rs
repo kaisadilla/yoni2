@@ -1,4 +1,5 @@
-use crate::cmd::util::{CmdContext, CmdContextExt, Error, interaction_locale};
+use crate::cmd::util::{CmdContext, CmdContextExt};
+use crate::util::Error;
 use poise::CreateReply;
 use poise::serenity_prelude::{Colour, CreateEmbed};
 

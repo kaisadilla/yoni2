@@ -1,3 +1,5 @@
+use crate::gif::{GifPHash, GifStatus};
+use crate::util::Hash;
 use anyhow::Result;
 use poise::serenity_prelude::{ChannelId, GuildId, UserId};
 use sqlx::sqlite::SqliteConnectOptions;
@@ -20,6 +22,163 @@ impl Store {
     sqlx::migrate!().run(&db).await?;
 
     Ok(Store { db })
+  }
+
+  pub async fn add_yoni_gif(
+    &self,
+    guild: GuildId,
+    gif_url: impl Into<String>,
+    status: GifStatus,
+  ) -> Result<()> {
+    let guild = i64::try_from(guild)?;
+    let gif_url = gif_url.into();
+
+    sqlx::query(
+      r#"
+        INSERT INTO gifs
+          (guild_id, url, exact_hash, visual_hash, similarity_hash, status)
+        VALUES (?, ?, NULL, NULL, NULL, ?)
+        ON CONFLICT DO NOTHING
+      "#,
+    )
+    .bind(&guild)
+    .bind(&gif_url)
+    .bind(status)
+    .execute(&self.db)
+    .await?;
+
+    Ok(())
+  }
+
+  pub async fn update_gif_status(
+    &self,
+    guild: GuildId,
+    gif_url: impl Into<String>,
+    status: GifStatus,
+  ) -> Result<()> {
+    let guild = i64::try_from(guild.get())?;
+    let gif_url = gif_url.into();
+
+    sqlx::query("UPDATE gifs SET status = ? WHERE guild_id = ? AND url = ?")
+      .bind(status)
+      .bind(guild)
+      .bind(gif_url)
+      .execute(&self.db)
+      .await?;
+
+    Ok(())
+  }
+
+  /// IF the GIF url given is in the store, returns its status, otherwise it
+  /// returns [`None`].
+  pub async fn get_gif_status_by_url(
+    &self,
+    guild: GuildId,
+    gif_url: impl Into<String>,
+  ) -> Result<Option<GifStatus>> {
+    let guild = i64::try_from(guild)?;
+    let gif_url = gif_url.into();
+
+    let status = sqlx::query_scalar::<_, GifStatus>(
+      "SELECT status FROM gifs WHERE guild_id = ? AND url = ?",
+    )
+    .bind(guild)
+    .bind(gif_url)
+    .fetch_optional(&self.db)
+    .await?;
+
+    Ok(status)
+  }
+
+  /// IF the GIF exact_hash given is in the store, returns its status, otherwise
+  /// it returns [`None`].
+  pub async fn get_gif_status_by_exact_hash(
+    &self,
+    guild: GuildId,
+    exact_hash: Hash,
+  ) -> Result<Option<GifStatus>> {
+    let guild = i64::try_from(guild)?;
+
+    let status = sqlx::query_scalar::<_, GifStatus>(
+      "SELECT status FROM gifs WHERE guild_id = ? AND exact_hash = ?",
+    )
+    .bind(guild)
+    .bind(exact_hash.as_slice())
+    .fetch_optional(&self.db)
+    .await?;
+
+    Ok(status)
+  }
+
+  /// IF the GIF visual_hash given is in the store, returns its status,
+  /// otherwise it returns [`None`].
+  pub async fn get_gif_status_by_visual_hash(
+    &self,
+    guild: GuildId,
+    visual_hash: Hash,
+  ) -> Result<Option<GifStatus>> {
+    let guild = i64::try_from(guild)?;
+
+    let status = sqlx::query_scalar::<_, GifStatus>(
+      "SELECT status FROM gifs WHERE guild_id = ? AND visual_hash = ?",
+    )
+    .bind(guild)
+    .bind(visual_hash.as_slice())
+    .fetch_optional(&self.db)
+    .await?;
+
+    Ok(status)
+  }
+
+  pub async fn set_gif_status(
+    &self,
+    guild: GuildId,
+    gif_url: impl Into<String>,
+    status: GifStatus,
+  ) -> Result<()> {
+    let guild = i64::try_from(guild.get())?;
+
+    sqlx::query(
+      r#"
+        UPDATE gifs
+        SET status = ?
+        WHERE guild_id = ? AND url = ?
+      "#,
+    )
+    .bind(status)
+    .bind(guild)
+    .bind(gif_url.into())
+    .execute(&self.db)
+    .await?;
+
+    Ok(())
+  }
+
+  /// Returns the url of a random GIF from among those Yoni is allowed to use.
+  pub async fn get_random_yoni_gif(
+    &self,
+    guild: GuildId,
+  ) -> Result<Option<String>> {
+    let guild = i64::try_from(guild)?;
+
+    let url = sqlx::query_scalar(
+      r#"
+        SELECT url
+        FROM gifs
+        WHERE guild_id = ?1 AND status = 'allowed'
+        LIMIT 1
+        OFFSET (
+          SELECT abs(random() % MAX(COUNT(*), 1))
+          FROM gifs
+          WHERE guild_id = ?1 AND status = 'allowed'
+        )
+      "#,
+    )
+    .bind(guild)
+    .fetch_optional(&self.db)
+    .await?;
+
+    Ok(url)
   }
 
   pub async fn thread_block(

@@ -2,10 +2,10 @@ pub mod message;
 pub mod reaction_add;
 pub mod reaction_remove;
 
-use crate::cmd::util::{Data, Error};
 use crate::events::message::message;
 use crate::events::reaction_add::reaction_add;
 use crate::events::reaction_remove::reaction_remove;
+use crate::util::{Data, Error};
 use poise::FrameworkContext;
 use poise::serenity_prelude::FullEvent;
 

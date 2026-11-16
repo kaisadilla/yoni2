@@ -1,82 +1,81 @@
-use crate::config::Config;
-use crate::i18n::{I18n, Locale};
-use crate::store::Store;
-use std::sync::Arc;
-
-pub type Error = Box<dyn std::error::Error + Send + Sync>;
-
-pub struct Data {
-  pub config: Config,
-  pub i18n: Arc<I18n>,
-  pub store: Store,
-}
+use crate::async_ret;
+use crate::i18n::Locale;
+use crate::util::{Data, Error};
+use poise::serenity_prelude::ReactionType;
+use poise::{CreateReply, ReplyHandle};
+use rand::RngExt;
 
 pub type CmdContext<'a> = poise::Context<'a, Data, Error>;
 
 pub trait CmdContextExt {
-  async fn loc(&self) -> Locale;
+  /// Returns a Locale in this context's language.
+  fn loc(&self) -> async_ret!(Locale);
+  /// If the context given belongs to a prefix command, has a 1/3 chance to
+  /// tomato the command message.
+  fn tomato_bad_command(&self) -> async_ret!(anyhow::Result<()>);
+  /// Sends the message given to the user as an ephemereal message.
+  fn ephemeral(
+    &self,
+    message: impl Into<String>,
+  ) -> async_ret!(Result<ReplyHandle<'_>, Error>);
+  /// Sends the message given to the user as an ephemereal error.
+  fn ephemeral_error(&self, message: impl Into<String>) -> async_ret!(());
+  /// Sends a generic "internal error" message to the user.
+  fn internal_error(&self) -> async_ret!(());
+  /// Sends a generic "not yet implemented" message to the user.
+  fn not_yet_implemented(&self) -> async_ret!(());
 }
 
 impl<'a> CmdContextExt for CmdContext<'a> {
-  /// Returns a Locale in this context's language.
-  async fn loc(&self) -> Locale {
-    self.data().i18n.locale(&self).await
-  }
-}
-
-/// If it's a slash command, returns the locale of the guild (e.g. server) in
-/// which the command was called. Otherwise, returns the default locale.
-pub fn interaction_locale<'a>(ctx: &CmdContext<'a>) -> &'a str {
-  match ctx {
-    poise::Context::Application(app_ctx) => app_ctx
-      .interaction
-      .guild_locale
-      .as_deref()
-      .unwrap_or(ctx.data().i18n.default_lang()),
-    poise::Context::Prefix(_) => ctx.data().i18n.default_lang(),
-  }
-}
-
-pub async fn ephemeral_error(ctx: &CmdContext<'_>, message: impl Into<String>) {
-  let _ = ctx
-    .send(poise::CreateReply::default().content(message).ephemeral(true))
-    .await;
-}
-
-pub async fn internal_error(ctx: &CmdContext<'_>, locale: &str) {
-  ephemeral_error(ctx, ctx.data().i18n.t(locale, "error.internal")).await;
-}
-
-/// Checks if the user is in a server. If they aren't, sends a user-only error
-/// indicating the command can only be used in a server.
-pub async fn check_guild_only(ctx: CmdContext<'_>) -> Result<bool, Error> {
-  if ctx.guild_id().is_some() {
-    return Ok(true);
+  fn loc(&self) -> async_ret!(Locale) {
+    self.data().i18n.locale(&self)
   }
 
-  let locale = interaction_locale(&ctx);
-  ephemeral_error(&ctx, ctx.data().i18n.t(locale, "command.server-only")).await;
-  Ok(false)
-}
+  fn tomato_bad_command(&self) -> async_ret!(anyhow::Result<()>) {
+    async move {
+      if let poise::Context::Prefix(pctx) = self {
+        if rand::rng().random_bool(0.3334) {
+          pctx.msg.react(self, ReactionType::Unicode("🍅".to_owned())).await?;
+        }
+      }
 
-pub async fn notify_err_not_yet_implemented(
-  ctx: &CmdContext<'_>,
-) -> Result<(), Error> {
-  let locale = interaction_locale(&ctx);
-  let i18n = &ctx.data().i18n;
+      Ok(())
+    }
+  }
 
-  ephemeral_error(&ctx, i18n.t(locale, "error.not-yet-implemented")).await;
+  fn ephemeral(
+    &self,
+    message: impl Into<String>,
+  ) -> async_ret!(Result<ReplyHandle<'_>, Error>) {
+    let message = message.into();
+    async move {
+      self
+        .send(CreateReply::default().content(message).ephemeral(true))
+        .await
+        .map_err(Into::into)
+    }
+  }
 
-  Ok(())
-}
+  fn ephemeral_error(&self, message: impl Into<String>) -> async_ret!(()) {
+    let message = message.into();
+    async move {
+      let _ = self
+        .send(CreateReply::default().content(message).ephemeral(true))
+        .await;
+    }
+  }
 
-pub async fn notify_err_no_lawyer_role(
-  ctx: &CmdContext<'_>,
-) -> Result<(), Error> {
-  let locale = interaction_locale(&ctx);
-  let i18n = &ctx.data().i18n;
+  fn internal_error(&self) -> async_ret!(()) {
+    async move {
+      let _ = self.ephemeral_error(self.loc().await.t("error.internal")).await;
+    }
+  }
 
-  ephemeral_error(&ctx, i18n.t(locale, "error.no-lawyer-role")).await;
-
-  Ok(())
+  fn not_yet_implemented(&self) -> async_ret!(()) {
+    async move {
+      let _ = self
+        .ephemeral_error(self.loc().await.t("error.not-yet-implemented"))
+        .await;
+    }
+  }
 }

@@ -1,6 +1,5 @@
 use crate::cmd::util::CmdContext;
 use include_dir::Dir;
-use poise::serenity_prelude::GuildId;
 use rand::seq::IteratorRandom;
 use std::borrow::Cow;
 use std::collections::HashMap;
