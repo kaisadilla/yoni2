@@ -1,7 +1,7 @@
 use crate::cmd::util::{CmdContext, CmdContextExt};
 use crate::util::Error;
 use poise::CreateReply;
-use poise::serenity_prelude::{Colour, CreateEmbed};
+use poise::serenity_prelude::{Colour, CreateEmbed, Mentionable};
 
 #[poise::command(slash_command, rename = "help")]
 pub async fn help(ctx: CmdContext<'_>) -> Result<(), Error> {
@@ -16,11 +16,17 @@ pub async fn help(ctx: CmdContext<'_>) -> Result<(), Error> {
           .description(l.fmt(
             "commands.help.reply.body",
             &[
-              ("channel_bugs_id", &config.channel_bugs_id),
-              ("channel_comandos_id", &config.channel_comandos_id),
-              ("channel_hilos_id", &config.channel_hilos_id),
-              ("channel_oratorio_id", &config.channel_oratorio_id),
-              ("channel_yoni_id", &config.channel_yoni_id),
+              ("channel_bugs_mention", &config.channel_bugs_id.mention()),
+              (
+                "channel_comandos_mention",
+                &config.channel_comandos_id.mention(),
+              ),
+              ("channel_hilos_mention", &config.channel_hilos_id.mention()),
+              (
+                "channel_oratorio_mention",
+                &config.channel_oratorio_id.mention(),
+              ),
+              ("channel_yoni_mention", &config.channel_yoni_id.mention()),
             ],
           ))
           .color(Colour::BLUE),

@@ -1,6 +1,8 @@
 use crate::gif::{Gif, GifPHash, GifStatus};
 use crate::store::Store;
-use crate::util::{Data, GuildChannelExt, Hash, MessageExt};
+use crate::util::{
+  Data, GuildChannelExt, Hash, MessageExt, VecExt, strip_diacritics,
+};
 use ab_glyph::FontArc;
 use image::{ImageFormat, Rgba};
 use imageproc::drawing::{draw_text_mut, text_size};
@@ -8,14 +10,19 @@ use poise::serenity_prelude::{
   Context, CreateAttachment, CreateEmbed, CreateMessage, GuildChannel, GuildId,
   Message,
 };
-use regex::Regex;
-use std::sync::OnceLock;
+use rand::RngExt;
+use rand::seq::IteratorRandom;
+use regex::{Regex, regex};
+use std::sync::{LazyLock, OnceLock};
 use tracing::{debug, error, info, warn};
 
 pub async fn message(data: &Data, ctx: &Context, message: &Message) {
   check_mike_mierda(data, ctx, message).await;
   check_thread_msg(data, ctx, message).await;
   check_gif(data, ctx, message).await;
+  check_yoni_mention(data, ctx, message).await;
+  check_hola(data, ctx, message).await;
+  check_yoni_channel(data, ctx, message).await;
 }
 
 /// If the message given comes from USER_MIKE_ID and talks about mierda,
@@ -43,15 +50,15 @@ async fn check_mike_mierda(data: &Data, ctx: &Context, msg: &Message) {
   }
 
   // Check whether the user is talking about mierda.
-  let has_kw = KW
-    .iter()
-    .any(|&kw| content.contains(kw) || regex_culo().is_match(&content));
+  let has_kw = KW.iter().any(|&kw| {
+    content.contains(kw) || regex!(r"(?i)\bculo\b").is_match(&content)
+  });
 
   if has_kw == false {
     return;
   }
 
-  let locale = data.i18n.default_lang();
+  let l = data.i18n.default_locale();
 
   let Ok(Some((time_since_last, is_record))) =
     data.store.update_mierda(guild_id, msg.author.id).await
@@ -84,12 +91,8 @@ async fn check_mike_mierda(data: &Data, ctx: &Context, msg: &Message) {
           .reference_message(msg)
           .embed(
             CreateEmbed::new()
-              .title(data.i18n.t(locale, "events.last-mierda.title"))
-              .description(data.i18n.f(
-                locale,
-                key,
-                &[("days", &time_since_last)],
-              ))
+              .title(l.t("events.last-mierda.title"))
+              .description(l.fmt(key, &[("days", &time_since_last)]))
               .image("attachment://last-mierda.png"),
           )
           .add_file(att),
@@ -99,21 +102,8 @@ async fn check_mike_mierda(data: &Data, ctx: &Context, msg: &Message) {
   } else {
     // Else we just complain about Mike's inability not to last a day without
     // talking about it.
-    msg
-      .reply(
-        ctx,
-        data.i18n.t(locale, "events.last-mierda.replies.not-even-a-day"),
-      )
-      .await
-      .ok();
+    msg.reply(ctx, l.t("events.last-mierda.replies.not-even-a-day")).await.ok();
   }
-}
-
-/// Returns the regex for the word "culo".
-fn regex_culo() -> &'static Regex {
-  static REGEX: OnceLock<Regex> = OnceLock::new();
-
-  REGEX.get_or_init(|| Regex::new(r"(?i)\bculo\b").unwrap())
 }
 
 /// Generates an image of The Simpsons replacing the number in a poster for
@@ -200,6 +190,7 @@ async fn check_usr_is_blocked(
   true
 }
 
+/// Acts when the message features GIFs.
 async fn check_gif(data: &Data, ctx: &Context, msg: &Message) {
   let Some(guild) = msg.guild_id else {
     return;
@@ -246,7 +237,8 @@ async fn register_gif(
 
 /// Registers this GIF in the store, if it isn't there already. Returns its
 /// status.
-async fn _register_gif_complex(
+/// WARNING: This method is not currently fully functional and is boxed for now.
+async fn _register_gif_smart(
   store: &Store,
   client: &reqwest::Client,
   guild: GuildId,
@@ -318,4 +310,233 @@ async fn _register_gif_complex(
       GifStatus::Allowed
     },
   })
+}
+
+/// Acts when Yoni is mentioned in a message.
+async fn check_yoni_mention(data: &Data, ctx: &Context, msg: &Message) {
+  // Yoni doesn't check mentions in his channels.
+  if msg.channel_id == data.config.channel_yoni_id
+    || msg.channel_id == data.config.channel_oratorio_id
+  {
+    return;
+  }
+
+  let l = data.i18n.default_locale();
+  let content = msg.content.to_lowercase();
+
+  if content.starts_with("yoni ") {
+    return;
+  }
+
+  if regex!(r"y+o+n+i+").is_match(&content) == false {
+    return;
+  }
+
+  if Some(msg.author.id) == data.config.user_meimeigpt_id {
+    msg.reply(&ctx.http, l.t("replies.yoni-mention.meimeigpt")).await.ok();
+  } else {
+    let usrname = msg
+      .member
+      .as_deref()
+      .and_then(|m| m.nick.as_deref())
+      .or(msg.author.global_name.as_deref())
+      .unwrap_or(&msg.author.name);
+
+    msg
+      .reply(
+        &ctx.http,
+        l.fmt("replies.yoni-mention.default", &[("user_name", &usrname)]),
+      )
+      .await
+      .ok();
+  }
+}
+
+async fn check_hola(data: &Data, ctx: &Context, msg: &Message) {
+  let Some(chance) = data.config.no_digas_hola_chance else {
+    return;
+  };
+  let Some(sticker_id) = data.config.sticker_no_digas_hola_id else {
+    warn!("Missing config variable: STICKER_NO_DIGAS_HOLA_ID.");
+    return;
+  };
+
+  if rand::rng().random_bool(chance) == false {
+    return;
+  }
+
+  let content = msg.content.to_lowercase();
+
+  if content.contains("hola") == false {
+    return;
+  }
+
+  msg
+    .channel_id
+    .send_message(
+      ctx,
+      CreateMessage::new().reference_message(msg).sticker_id(sticker_id),
+    )
+    .await
+    .ok();
+}
+
+async fn check_yoni_channel(data: &Data, ctx: &Context, msg: &Message) {
+  // Ignore the message if the channel is not Yoni or Oratorio.
+  if msg.channel_id != data.config.channel_yoni_id
+    && msg.channel_id != data.config.channel_oratorio_id
+  {
+    return;
+  }
+
+  // Ignore the message if it comes from a bot other than MeiMei GPT.
+  if msg.author.bot && Some(msg.author.id) != data.config.user_meimeigpt_id {
+    return;
+  }
+
+  // This message is a reply to a user that isn't Yoni.
+  if msg
+    .referenced_message
+    .as_deref()
+    .is_none_or(|r| r.author.id == data.config.user_yoni_id)
+    == false
+  {
+    // There's a 1 in 50 chance Yoni will tell the author to get the f out.
+    if rand::rng().random_bool(0.02)
+      && let Some(response) = data.conversation_model.interferences.random()
+    {
+      msg.reply(ctx, response).await.ok();
+    }
+
+    return;
+  }
+
+  let content = strip_diacritics(&msg.content.to_lowercase());
+  let mut message_sent = false;
+
+  // Short messages.
+  for res in &data.conversation_model.exact_responses {
+    if res.pattern.iter().any(|p| p.eq(&content)) {
+      reply_multiple(ctx, msg, &res.response).await;
+      message_sent = true;
+    }
+  }
+
+  // Regexes
+  if regex!(r"\A(?:ja[jas]+|aj[jas]+|pua[jas]+|js[jas]+|xd+|lol+)\z")
+    .is_match(&content)
+  {
+    if let Some(v) = data.conversation_model.regexes.haha.random() {
+      msg.reply(ctx, v).await.ok();
+      message_sent = true;
+    }
+  }
+
+  if regex!(r"\An+o+o\z").is_match(&content) {
+    if let Some(v) = data.conversation_model.regexes.noo.random() {
+      reply_multiple(ctx, msg, &v).await;
+      message_sent = true;
+    }
+  }
+
+  // Reply gifs with gifs.
+  if msg.gif_urls().is_empty() == false
+    && let Some(guild_id) = msg.guild_id
+    && let Ok(Some(gif_id)) = data.store.get_random_yoni_gif(guild_id).await
+  {
+    msg.reply(ctx, gif_id).await.ok();
+    message_sent = true;
+  }
+
+  // If we've already sent a message, we won't analyze or sent anything more.
+  if message_sent {
+    return;
+  }
+
+  // Partial responses.
+  let mut fragments: Vec<&str> = vec![];
+  let mut sentences: Vec<&str> = vec![];
+
+  for res in &data.conversation_model.partial_responses {
+    for p in &res.pattern {
+      let pattern = if res.exact {
+        format!(r"\b{}\b", regex::escape(p))
+      } else {
+        p.clone()
+      };
+
+      let re = match Regex::new(&pattern) {
+        Ok(re) => re,
+        Err(err) => {
+          warn!(%err, %pattern, "Invalid regex.");
+          continue;
+        },
+      };
+
+      if re.is_match(&content) == false {
+        continue;
+      }
+
+      if let Some(response) = res.response.random() {
+        if res.fragment {
+          fragments.push(response);
+        } else {
+          sentences.push(response);
+        }
+      }
+    }
+  }
+
+  // If no message is sent
+  if fragments.is_empty() == false || sentences.is_empty() == false {
+    let mut final_reply = sentences.join(" ");
+    let fragments = join_fragments(&fragments);
+
+    if fragments.is_empty() == false {
+      final_reply.push(' ');
+      final_reply.push_str(&fragments);
+      final_reply.push('.');
+    };
+
+    if final_reply.is_empty() == false {
+      if let Ok(_) = msg.reply(ctx, final_reply).await {
+        message_sent = true;
+      }
+    }
+  }
+
+  if message_sent {
+    return;
+  }
+  if msg.channel_id == data.config.channel_oratorio_id {
+    return;
+  }
+
+  if let Some(fallback) = data.conversation_model.fallbacks.random() {
+    msg.reply(ctx, fallback).await.ok();
+  }
+}
+
+/// Sends all the messages given - the first as a reply and the rest as normal
+/// messages immediately after.
+async fn reply_multiple(ctx: &Context, msg: &Message, replies: &[String]) {
+  for (i, val) in replies.iter().enumerate() {
+    if i == 0 {
+      msg.reply(ctx, val).await.ok();
+    } else {
+      msg
+        .channel_id
+        .send_message(ctx, CreateMessage::new().content(val))
+        .await
+        .ok();
+    }
+  }
+}
+
+fn join_fragments(fragments: &[&str]) -> String {
+  match fragments.split_last() {
+    None => String::new(),
+    Some((last, [])) => (*last).to_owned(),
+    Some((last, rest)) => format!("{} y {}", rest.join(", "), last),
+  }
 }

@@ -6,7 +6,7 @@ use poise::serenity_prelude::Member;
   slash_command,
   prefix_command,
   rename = "bless",
-  aliases("bendice")
+  aliases("bendecir")
 )]
 pub async fn bless(ctx: CmdContext<'_>, person: Member) -> Result<(), Error> {
   let l = ctx.loc().await;

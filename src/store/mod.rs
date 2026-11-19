@@ -5,6 +5,7 @@ use poise::serenity_prelude::{ChannelId, GuildId, UserId};
 use sqlx::sqlite::SqliteConnectOptions;
 use sqlx::{SqlitePool, query_scalar};
 use std::str::FromStr;
+use tracing::debug;
 
 const SECONDS_PER_DAY: i64 = 86_400;
 

@@ -2,9 +2,10 @@ use crate::cmd::util::CmdContext;
 use include_dir::Dir;
 use rand::seq::IteratorRandom;
 use std::borrow::Cow;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::fmt::Display;
 use std::sync::Arc;
+use tracing::error;
 
 pub static LANG_DIR: Dir =
   include_dir::include_dir!("$CARGO_MANIFEST_DIR/lang");
@@ -53,31 +54,60 @@ impl I18n {
     }
   }
 
+  /// Returns a locale with the bot's default language.
+  pub fn default_locale(self: &Arc<Self>) -> Locale {
+    Locale { i18n: self.clone(), lang: self.default_lang.clone() }
+  }
+
   /// Retrieves the string for the key and locale given if it exists. If the
   /// value associated to the given key is an array of strings, returns one of
   /// these at random.
   pub fn get(&self, locale: &str, key: &str) -> Option<&str> {
-    let mut path = key.split('.');
-    let mut val = self.languages.get(locale)?.get(path.next()?)?;
+    let mut current_key = key.to_owned();
+    let mut visited = HashSet::new();
 
-    for name in path {
-      val = val.as_table()?.get(name)?;
-    }
+    // A loop to resolve redirects (values in the format of `::key`).
+    loop {
+      if visited.insert(current_key.clone()) == false {
+        error!(origin = key, "Lang keys form a circular dependency.");
+      }
 
-    match val {
-      toml::Value::String(val) => Some(val.as_str()),
+      let mut path = current_key.split('.');
+      let mut val = self.languages.get(locale)?.get(path.next()?)?;
 
-      toml::Value::Array(vals) => {
-        // If the value array doesn't contain any string, we return None.
-        if vals.iter().any(|v| matches!(v, toml::Value::String(_)) == false) {
-          return None;
-        }
+      for name in path {
+        val = val.as_table()?.get(name)?;
+      }
 
-        // Return a string inside the array at random.
-        vals.iter().filter_map(toml::Value::as_str).choose(&mut rand::rng())
-      },
+      let val = match val {
+        toml::Value::String(val) => val.as_str(),
 
-      _ => None,
+        toml::Value::Array(vals) => {
+          // If the value array doesn't contain any string, we return None.
+          if vals.iter().any(|v| matches!(v, toml::Value::String(_)) == false) {
+            return None;
+          }
+
+          // Return a string inside the array at random. If the array is empty,
+          // returns None.
+          match vals
+            .iter()
+            .filter_map(toml::Value::as_str)
+            .choose(&mut rand::rng())
+          {
+            Some(v) => v,
+            None => return None,
+          }
+        },
+
+        _ => return None,
+      };
+
+      if let Some(alias) = val.strip_prefix("::") {
+        current_key = alias.to_owned();
+      } else {
+        return Some(val);
+      }
     }
   }
 

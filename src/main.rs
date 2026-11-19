@@ -1,12 +1,13 @@
 use crate::cmd::build_command_array;
 use crate::cmd::util::CmdContextExt;
 use crate::config::Config;
+use crate::conversation::ConversationModel;
 use crate::events::event_handler;
 use crate::i18n::I18n;
 use crate::store::Store;
 use crate::util::{Data, Error};
 use poise::builtins::register_globally;
-use poise::serenity_prelude::{Client, GatewayIntents};
+use poise::serenity_prelude::{ActivityData, Client, GatewayIntents};
 use poise::{
   Command, Framework, FrameworkError, FrameworkOptions, PrefixFrameworkOptions,
 };
@@ -18,8 +19,10 @@ use tracing_subscriber::EnvFilter;
 
 pub mod cmd;
 pub mod config;
+pub mod conversation;
 pub mod download;
 pub mod events;
+pub mod games;
 pub mod gif;
 pub mod i18n;
 pub mod store;
@@ -70,12 +73,19 @@ async fn main() -> Result<(), Error> {
 
         register_globally(ctx, &framework.options().commands).await?;
 
+        if let Some(activity) = &config.activity {
+          ctx.set_activity(Some(ActivityData::custom(activity)));
+        }
+
         let client = reqwest::Client::builder()
           .connect_timeout(Duration::from_secs(5))
           .timeout(Duration::from_secs(20))
           .build()?;
 
-        Ok(Data { config, i18n, store, client })
+        let conversation_model: ConversationModel =
+          serde_json::from_str(include_str!("../assets/conversation.json"))?;
+
+        Ok(Data { config, i18n, store, client, conversation_model })
       })
     })
     .build();

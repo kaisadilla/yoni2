@@ -1,11 +1,18 @@
 use crate::config::Config;
+use crate::conversation::ConversationModel;
 use crate::i18n::I18n;
 use crate::store::Store;
+use poise::CreateReply;
 use poise::serenity_prelude::{
-  CacheHttp, ChannelType, GuildChannel, GuildId, Member, Message, UserId,
+  CacheHttp, ChannelType, ComponentInteraction, Context,
+  CreateInteractionResponse, CreateInteractionResponseMessage, GuildChannel,
+  GuildId, Interaction, Member, Message, Sticker, UserId,
 };
+use rand::seq::IteratorRandom;
 use std::collections::HashSet;
 use std::sync::Arc;
+use unicode_normalization::UnicodeNormalization;
+use unicode_normalization::char::is_combining_mark;
 
 /// Takes a type as a parameter and represents the return value of a function
 /// that returns an async-compatible Future.
@@ -21,6 +28,7 @@ pub struct Data {
   pub i18n: Arc<I18n>,
   pub store: Store,
   pub client: reqwest::Client,
+  pub conversation_model: ConversationModel,
 }
 
 pub type Error = Box<dyn std::error::Error + Send + Sync>;
@@ -169,8 +177,57 @@ impl MessageExt for Message {
   }
 }
 
+pub trait InteractionExt {
+  fn ephemeral(
+    &self,
+    cache: impl CacheHttp,
+    message: impl Into<String>,
+  ) -> async_ret!(Result<(), Error>);
+}
+
+impl InteractionExt for ComponentInteraction {
+  fn ephemeral(
+    &self,
+    cache: impl CacheHttp,
+    message: impl Into<String>,
+  ) -> async_ret!(Result<(), Error>) {
+    let message = message.into();
+
+    async move {
+      self
+        .create_response(
+          cache,
+          CreateInteractionResponse::Message(
+            CreateInteractionResponseMessage::new()
+              .content(message)
+              .ephemeral(true),
+          ),
+        )
+        .await
+        .map_err(Into::into)
+    }
+  }
+}
+
+pub trait VecExt<T> {
+  fn random(&self) -> Option<&T>;
+}
+
+impl<T> VecExt<T> for Vec<T> {
+  fn random(&self) -> Option<&T> {
+    let mut rng = rand::rng();
+
+    self.iter().choose(&mut rng)
+  }
+}
+
 fn is_gif_url(url: &str) -> bool {
   let path = url.split(|c| c == '?' || c == '#').next().unwrap_or(url);
 
   path.to_ascii_lowercase().ends_with(".gif")
+}
+
+/// Strips diacritics in the string given. This will turn Ñ into N.
+pub fn strip_diacritics(s: &str) -> String {
+  s.nfd().filter(|c| is_combining_mark(*c) == false).collect()
 }

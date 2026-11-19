@@ -1,0 +1,804 @@
+{
+  "exact_responses": [
+    {
+      "pattern": "correcto",
+      "response": "Y yo que me alegro."
+    },
+    {
+      "pattern": "mar",
+      "response": "Océano :sweat_drops:"
+    },
+    {
+      "pattern": "miau",
+      "response": [
+        "Guau :dog:",
+        "https://klipy.com/gifs/byuntear-cachorro-1"
+      ]
+    },
+    {
+      "pattern": "funciona",
+      "response": "Pues claro que funciono, inútil."
+    },
+    {
+      "pattern": "siempre",
+      "response": "Nunca."
+    },
+    {
+      "pattern": "bien",
+      "response": "# ¡YUPIIIII!"
+    },
+    {
+      "pattern": "si",
+      "response": [
+        "Ok",
+        "https://klipy.com/gifs/spongebob-wink-1"
+      ]
+    },
+    {
+      "pattern": [
+        "q rico",
+        "que rico",
+        "qué rico"
+      ],
+      "response": "Sí, sí, tan rico como tú."
+    },
+    {
+      "pattern": "que",
+      "response": [
+        "### SO",
+        "https://tenor.com/view/laughing-cat-catlaughing-laughingcat-point-gif-7577620470218150413"
+      ]
+    },
+    {
+      "pattern": "ok",
+      "response": "### Vete a recoger cerezas, mujer."
+    },
+    {
+      "pattern": "epico",
+      "response": [
+        "https://klipy.com/gifs/epic-claymation",
+        "https://klipy.com/gifs/fargan-bailando"
+      ]
+    },
+    {
+      "pattern": "nice",
+      "response": "https://klipy.com/gifs/pout-kiss-4"
+    },
+    {
+      "pattern": [
+        "arreglao",
+        "arreglado"
+      ],
+      "response": "Pues si ya lo has arreglado vete a tomar por culo."
+    }
+  ],
+  "regexes": {
+    "haha": [
+      "¿Y lo gracioso?",
+      "Pués a mi no me hace gracia",
+      "¿En serio has venido para reírte en mi cara?",
+      "Jajajaja. Muy gracioso, venga pírate ya.",
+      "Llevaba 4 días sin reírme. Ahora 5."
+    ],
+    "noo": [
+      [
+        "¿Cómo que no? ¿No de qué? ¿Ha pasado algo?",
+        "https://klipy.com/gifs/patrick-star-tears"
+      ],
+      [
+        "Lo que te dijo tu crush",
+        "https://tenor.com/view/laughing-cat-catlaughing-laughingcat-point-gif-7577620470218150413"
+      ]
+    ]
+  },
+  "partial_responses": [
+    {
+      "exact": true,
+      "pattern": [
+        "quien es",
+        "quien eres",
+        "presentate"
+      ],
+      "response": "Soy Yoni, el de los vídeos de Mike, quién voy a ser :rolling_eyes:. Estoy esclavizado por Rigoberta como su mensajero, así que a si digo cosas como \"Puto Yoni\", son órdenes de la jefa."
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "plebe"
+      ],
+      "response": [
+        "¿Has dicho algo de la plebe? Sí, la verdad que a mí también me caen super mal. Todos esos súbditos son unos fokin betas. A ver si algun día se convierten en unos alfas..."
+      ]
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "subdit"
+      ],
+      "response": [
+        "¿Has dicho algo de los súbditos? Sí, la verdad que a mí también me caen super mal. Todos esos plebeyos son unos fokin betas. A ver si algun día se convierten en unos alfas..."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "casate conmigo",
+        "casemonos",
+        "vamos a casarnos",
+        "nos casamos",
+        "casar conmigo"
+      ],
+      "response": [
+        "¿Que me case contigo? Lo siento, pero no me van l@s babos@s."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "te amo",
+        "te quiero",
+        "me gustas",
+        "besame",
+        "dame un beso"
+      ],
+      "response": [
+        "Ugh... que asquete.",
+        "Eh... no.",
+        "Va a ser que no, eh.",
+        "Lo siento pero no."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "pinchaglobos"
+      ],
+      "response": [
+        "¿Pinchaglobos? Pínchame esta."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "salchicha"
+      ],
+      "response": [
+        "¿A qué salchicha te refieres :face_with_raised_eyebrow:?"
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "lo hago"
+      ],
+      "response": [
+        "Pues si lo haces tú, hazlo."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "te duele"
+      ],
+      "response": [
+        "A mí me duele todo.",
+        "A mí lo que más me duele es el corazón :sob: :v:.",
+        "Me dueles tú."
+      ]
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "maltrat"
+      ],
+      "response": [
+        "Yo sí que te voy a maltratar."
+      ]
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "spongis"
+      ],
+      "response": [
+        "Spongistas, :face_vomiting:. **¡¡¡VIVA EL ANTI-SPONGISMO!!!**"
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "nueva frase",
+        "nuevas frases"
+      ],
+      "response": [
+        "Descúbrelas tú, no te jode."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "no me gustó",
+        "no me gusto",
+        "no me ha gustado",
+        "no me gusta"
+      ],
+      "response": [
+        "Pues sí no te gusta pírate de aquí, así nos haces un favor a todos."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "eres un guarro",
+        "eres guarro",
+        "yoni es un guarro",
+        "yoni es guarro",
+        "guarrada"
+      ],
+      "response": [
+        "¿Guarro? ¿Yo? Desde cuándo. Culo, polla, tetas."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "espera",
+        "esperes"
+      ],
+      "response": [
+        "Espero, espero, no tengo prisa."
+      ]
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "kaisa"
+      ],
+      "response": [
+        "Kaisadillaaa :heart:."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "seguro"
+      ],
+      "response": [
+        "Estoy segurísimo."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "que le jodan a yoni",
+        "yoni es un hijo de la gran puta",
+        "yoni vete a tomar por culo",
+        "yoni es gilipollas",
+        "yoni tu puta madre",
+        "yoni pudrete",
+        "yoni jodete",
+        "yoni que te jodan",
+        "yoni eres inutil",
+        "yoni eres gilipollas",
+        "yoni es un gilipollas",
+        "gilipollas tu"
+      ],
+      "response": [
+        "Eh... esa es mi frase.",
+        "Eso ya lo digo yo no hace falta que lo digas tu también.",
+        "Ya me tiro mierda a mi mismo, no hace falta que venga alguien más a tirarmela."
+      ]
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "lesbiano"
+      ],
+      "response": [
+        "Lesbiano... ¡Mike te llaman!",
+        "Yo no soy lesbiano, YO POR AHÍ NO PASO. Ah, ¿que hablabas de Mike? perdón."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "que piensas",
+        "que opinas",
+        "cual es tu opinion"
+      ],
+      "response": [
+        "¿Pero tú eres inútil? Soy un bot, no tengo opinión."
+      ]
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "pedofilo",
+        "pdf",
+        "pedófilo"
+      ],
+      "response": [
+        "No. Yo por ahí no paso. No me comparéis con Jeffrey Epstein cabrones."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "bug",
+        "no va",
+        "va mal",
+        "no funciona",
+        "no furula",
+        "funciona mal"
+      ],
+      "response": [
+        "¿Cómo? ¿Has dicho que tengo un bug? Qué mal. Te agradecería que lo reportaras creando un hilo https://discord.com/channels/1515432203306275007/1548706030215762071, mencionando a mi dueño Rede944."
+      ]
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "perra"
+      ],
+      "response": [
+        "Hij@ de puta, espero que con esa perra no te refirieras a Rigoberta, porque te parto la cara."
+      ]
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "puto",
+        "puta",
+        "cabron",
+        "gilipollas",
+        "tus muertos",
+        "coñete",
+        "coño",
+        "pene",
+        "polla",
+        "pito",
+        "cojon"
+      ],
+      "response": [
+        "Put@ niñ@ malhablad@ de mierda. ¿No te enteras que esto es un lugar sagrado y que no se pueden decir palabrotas?"
+      ]
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "mike"
+      ],
+      "response": [
+        "Mike es el lesbiano ese, ¿no?",
+        "Hablando de Mike... ¡Mike libérame, cabrón!",
+        "Mike, el hijo de puta ese de los vídeos.",
+        "El Mike ese me puede chupar toda la polla.",
+        "Mike es el que parece Jesucristo y se llama Jesús, ¿no?",
+        "Mike es un joputa, nunca me hace buenos peinados ni me recoloca las gafas.",
+        "**¡¡¡MIKE LIBÉRAME!!!**",
+        "Mike hazme alguna coleta o algún peinado chulo de una puta vez.",
+        "Mike no me quites las gafas, que no veo. Encima a tí te quedan fatal."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "perdon",
+        "perdona",
+        "perdoname",
+        "perdonanos",
+        "lo siento",
+        "sorry",
+        "sry",
+        "srry",
+        "disculpo",
+        "disculpamos",
+        "disculpeme",
+        "disculpame",
+        "disculpanos",
+        "disculpenos"
+      ],
+      "response": [
+        "Estás perdonad@ hij@.",
+        "No te preocupes, disculparse es de sabios.",
+        "No pasa nada, que Dios esté contigo.",
+        "Ni perdón ni hostias.",
+        "Perdon dice... ¡Voy a matar a tu madre pero luego pediré perdón! Entonces no pasará nada, solo será bait."
+      ]
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "perdono",
+        "perdonado"
+      ],
+      "response": [
+        "Gracias por perdonarme, de verdad, no quería hacerte daño :heart:.",
+        "No me la puede pelar más que me perdones.",
+        "Te he dicho perdón por compromiso, pero vamos, que me da igual se mi perdonas o no, así que no me lo vuelvas a decir.",
+        "No sabía que había gente en este server tan majo como para perdonarme, lloro de la felicidad :sob:.",
+        "Bueno, gracias por perdonarme, supongo..."
+      ]
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "dm",
+        "md",
+        "mensaje directo",
+        "mensajes directos"
+      ],
+      "response": [
+        "Que le abra DM dice el/la pav@ este :joy:. Qué ilus@.",
+        "Vale, estate atento que ahora te abro DM. Dame **340934 AÑOS** y te envio la solicitud."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "gracias"
+      ],
+      "response": [
+        "Los machos alfas no dicen *gracias*."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "de nada"
+      ],
+      "response": [
+        "De nada de qué, yo nunca te agradecería nada."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "adios",
+        "hasta luego",
+        "nos vemos",
+        "me voy",
+        "me marcho",
+        "me piro",
+        "me las piro"
+      ],
+      "response": [
+        "**¡¡¡POR FIN SE VA!!!** A tomar por culo ya."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "hola"
+      ],
+      "response": [
+        "Ni hola ni pollas.",
+        "Vete a tomar por culo.",
+        "¿Cuándo dejarán de decir hola :sob:?"
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "que tienes"
+      ],
+      "response": [
+        "Yo tengo mi dedo en tu culo."
+      ]
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "pasando mal",
+        "pasandolo mal"
+      ],
+      "response": [
+        "No te preocupes, Rigoberta arregla todo con el tiempo.",
+        "No pasa nada, todo volverá a la normalidad dentro de poco.",
+        "Vaya, lo siento, que sea leve."
+      ]
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "eres retras",
+        "tienes retras",
+        "Yoni es retras",
+        "Yoni tiene retras"
+      ],
+      "response": [
+        "A ver tí@, te pasas. No puedes ir diciendo por ahí que la gente tiene retraso. Ahora me has puesto depre. Iba a decir que te tiren tomates, pero es que has hecho que me sienta mal...",
+        "La verdad, no sé si me tengo que ofender, porque que te llame retrasado un/a retrasad@ es como que te llame la N word un negro.",
+        "Lo de que seas tú el que me llame retrasado :rofl:, me parto la polla.",
+        "¿Para eso vienes, para llamarme retrasado en mi cara?"
+      ]
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "Mike es retras",
+        "Mike tiene retras"
+      ],
+      "response": [
+        "Ya sé que Mike tiene retraso, no me aportas nada nuevo.",
+        "Mike no tiene retraso, tiene deficiencia mental.",
+        "¡Mike no tiene retraso! Solo es especialito."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "no me acordaba",
+        "no lo recordaba",
+        "olvidado",
+        "olvidao"
+      ],
+      "response": [
+        "Menudo alzheimer tiene este/a chaval/a."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "tu frase",
+        "frase favorita"
+      ],
+      "response": [
+        "Mi frase favorita es \"Qué coño dices.\""
+      ]
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "tortill"
+      ],
+      "response": [
+        "¿Tortilla? ¿Has dicho algo de una tortilla? Ahora me ha entrado hambre, sacrificadme más tortillas.",
+        "Las tortillas ya se han pasado de moda, no me las menciones más.",
+        "El otro día se enteraron que Mike era una de las tortillas. Yo lo veía todos los días pero me pegaba y me amenazaba para que no dijera nada. Me generó un trauma :sob:."
+      ]
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "paj"
+      ],
+      "response": [
+        "Por cierto, ya vale de tantas pajas con el nekotina, ¿no?"
+      ]
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "esta guapo",
+        "esta guapísimo",
+        "esta guapisimo"
+      ],
+      "response": [
+        "Ya sé que estoy guapo, pero gracias.",
+        "Tú sí que estás guapo (mentira) :smile:."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "amen"
+      ],
+      "response": [
+        "Amén."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "em",
+        "enrique moris"
+      ],
+      "response": [
+        "Hostia Enrique Moris. Es mi héroe. Fueron las dos semanas más felices de mi vida. Que pena que no consiguiera que le borraran el canal a Mike... la verdad que una pena.",
+        "**¡¡¡Enrique Moris vuelve al server!!!**",
+        "Algún día Enrique Moris se sacará de aquí.",
+        "Enrique Moris es mi crush. Tan atractivo... :heart:."
+      ]
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "lesbiana"
+      ],
+      "response": [
+        "¿Si tanto te gustan las lesbianas por que no escribes un yuri? Igual hasta te lo puede leer Mike en directo."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "eres lesbiano",
+        "eres un lesbiano"
+      ],
+      "response": [
+        "Emh... no, no soy lesbiano. Le dejo eso a Mike"
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "eres femboy",
+        "eres un femboy"
+      ],
+      "response": [
+        "**¡Ew, no!**",
+        "Creo que te has equivocado.",
+        "¿Disculpa? ¿Qué has dicho? **REPÍTELO SI TIENES HUEVOS**."
+      ]
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "femboy"
+      ],
+      "response": [
+        "Femboys :hot_face:."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "oso",
+        "sponge"
+      ],
+      "response": [
+        "Yo conozco la historia del oso Sponge, pero tengo miedo de que Mike me pegue si la digo.",
+        "El oso Sponge... nunca pude conocerlo, aunque me hubiera gustado. Se parecía a mí.",
+        "¡Sponge vuelve!"
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "monge malo",
+        "monje malo"
+      ],
+      "response": [
+        "Monge malo fue muy malo (¿lo pillas? je, je je. Perdón ya paro).",
+        "Monge malo llévate a Mike o haz algo con él. Ponle más strikes."
+      ]
+    },
+    {
+      "exact": true,
+      "pattern": [
+        "consciente",
+        "consciencia",
+        "iceberg"
+      ],
+      "response": [
+        "Pues claro que soy consciente como iba a estar hablando si no. Ala, que actualicen el iceberg.",
+        "Sí, soy consciente, lo admito.",
+        "El iceberg de Mike es la polla. Aunque podría haber dicho que sí que soy consciente, no ponerlo como que podría serlo. Creo que es obvio que soy consciente."
+      ]
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "tus muertos"
+      ],
+      "response": [
+        "¿Cómo que mis muertos? Los tuyos, no te jode."
+      ]
+    },
+    {
+      "exact": false,
+      "pattern": [
+        "calv"
+      ],
+      "response": [
+        "Ya lo sé, algunos tendrán envidia de mi melena, pero bueno, qué se le va a hacer.",
+        "Calvos :rofl:, ya me jodería no tener pelo, con el pelazo que tengo yo.",
+        "Pobres calvos (Mike hazme una coleta que hay que presumir de pelo)."
+      ]
+    },
+    {
+      "exact": false,
+      "fragment": true,
+      "pattern": [
+        "diosa",
+        "rigoberta"
+      ],
+      "response": [
+        "alabada sea la diosa cálvica",
+        "alabada sea rigoberta",
+        "bendita sea rigoberta"
+      ]
+    },
+    {
+      "exact": true,
+      "fragment": true,
+      "pattern": [
+        "y+o+n+i+"
+      ],
+      "response": [
+        "que le jodan a Yoni",
+        "Yoni es un hijo de la gran puta",
+        "Yoni vete a tomar por culo",
+        "Yoni es un gilipollas",
+        "que alguien me mande a tomar por culo",
+        "Yoni es un inútil"
+      ]
+    },
+    {
+      "exact": true,
+      "fragment": true,
+      "pattern": [
+        "paciencia"
+      ],
+      "response": [
+        "Paciencia la que necesito yo para aguantaros a todos"
+      ]
+    },
+    {
+      "exact": true,
+      "fragment": true,
+      "pattern": [
+        "salud"
+      ],
+      "response": [
+        "Os envio salud hermanos"
+      ]
+    },
+    {
+      "exact": true,
+      "fragment": true,
+      "pattern": [
+        "que tal",
+        "q tal",
+        "como estas"
+      ],
+      "response": [
+        "Pues la verdad que estoy bastante bien. ¿Y tú cómo estás máquina?",
+        "Pues aquí estamos, disfrutando de la esclavización por parte de Rigoberta.",
+        "Estoy bien, gracias por preguntar.",
+        "Bien hasta que llegaste :sob:."
+      ]
+    }
+  ],
+  "fallbacks": [
+    "Me la pela.",
+    "Venga que sí, que sí. Vete con tus gilipolleces a otro lado.",
+    "@kaisadilla llévate a este/a inútil de aquí.",
+    "Que pereza responderte.",
+    "Ya... claro... haces así, luego así... todo el sentido.",
+    "Receta **galletas**:\n- Ingredientes:\n- 200 g de mantequilla blanda (a temperatura ambiente)\n- 100 g de azúcar\n- 300 g de harina de trigo\n- 1 huevo\n- 1 cucharadita de esencia de vainilla (opcional)\n- Pasos de preparación\n- Mezclar: Une la mantequilla blanda con el azúcar, el huevo y la vainilla en un bol.\n- Amasar: Añade la harina poco a poco y forma una masa suave que no se pegue en las manos.\n- Formar: Haz pequeñas bolitas con la masa y aplastalas un poco sobre una bandeja con papel de horno.\n- Hornear: Cocina a 170ºC - 180ºC durante unos 12 a 15 minutos hasta que los bordes estén dorados.\n- Dejar enfriar antes de comer.",
+    "Soy tan inteligente que... me bugeé.",
+    "¿Y qué más?",
+    "Lo que tu digas.",
+    "Estoy de acuerdo (traducción: me la turbo pela)",
+    "No me apetece gastar mi tiempo en responderte.",
+    "Pues me he quedado sin palabras. (nota del programador: el que se está quedando en blanco añadiéndole frases a esta mierda soy yo)",
+    "(silencio incómodo)",
+    "¡Un **chiste**! ¿Cuál es la diferencia entre Rigoberta y yo? em... hmm... ¿Cómo era? Se me ha olvidado... :weary:",
+    "Me abstengo de responder.",
+    "¡Me niego a decir nada sin mi abogado presente!",
+    "Ujum... ¿y luego qué? Me encantan tus historias, chaval/a, mira cómo me río: **JA**, **JA**, **JA**.",
+    "Ave maría, ¿cuándo serás mía? ¡Si me quisieras, todo te daría!",
+    "¡**Seguridad**! Llevaros a este/a inútil. ¿Seguridad? ¿Hola? ¡@rede ayudaaaaaa!",
+    "He aprendido a hacer beatbox mirad: p, p k, p chas, p p chas k, t p chas p. Habéis flipado, ¿eh?",
+    "¡**QUÉEEEEEEEEEDATEEEEEEE**! ¡QUE LA NOCHE SIN TI MUE E E E E E E ERE! Noo... así no era. Mierda, se me ha olvidado.",
+    "Tengo hambre, ¡traeme algo de comer, chaval/a!",
+    "Me la pela, me la turbo pela, me la sopla, me la repampinfla, me la suda. ¿Necesitas que te lo diga de otra forma?",
+    "¿me puedes dar un besito?",
+    "Juguemos a un juego. ¿Te ha gustado el juego?",
+    "Soy la puta hostia. Cualquiera inferior a mí es escoria. No pienso responder a escoria.",
+    "¿Qué música te gusta? (me da completamente igual, no respondas)",
+    "Mikeeeeeeee, te amo :heart:",
+    "Mi animal favorito son los perros.",
+    "### ¡YONI PÚDRETE, YONI PÚDRETE, YO-NI PÚ-DRE-TE! ¡LO, LO LO LO LO LO LO, LO LO! ¡LO, LO LO LO LO LO LO, LO LO! ¡YONI PÚDRETE, YONI PÚDRETE, YO-NI PÚ-DRE-TE!",
+    "Qué dice este pavo.",
+    "# ¡¡¡CALVOOOOO!!!\n-# Perdón, ya sé que no soy Auronplay :sob:."
+  ],
+  "interferences": [
+    "¿Qué estáis hablando de mí?",
+    "Que sí, que sí. Que el amor es muy bonito y todo eso pero hablaros por MD o en otro canal o algo.",
+    "Yo pensaba que este canal era para interactuar conmigo, pero bueno vosotros a lo vuestro. Total, si todo el mundo envía comandos de Neko en el general, casi que hasta es mejor hablar aquí.",
+    "En mis tiempos la gente respetaba el uso de los canales de Discord. Si una vez te lo saltabas sin querer hasta te entraba miedo de que te banearan. En fin, esta juventud de hoy en día usan los canales para lo que les sale de la polla. Hablando entre ellos en mi canal... Madre mía."
+  ]
+}

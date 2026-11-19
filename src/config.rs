@@ -1,5 +1,5 @@
 use anyhow::Context;
-use poise::serenity_prelude::{ChannelId, RoleId, UserId};
+use poise::serenity_prelude::{ChannelId, RoleId, StickerId, UserId};
 use std::str::FromStr;
 
 pub struct Config {
@@ -8,6 +8,9 @@ pub struct Config {
   pub bot_token: String,
   pub default_lang: String,
   pub database_url: String,
+
+  pub activity: Option<String>,
+  pub no_digas_hola_chance: Option<f64>,
 
   pub channel_bugs_id: ChannelId,
   pub channel_comandos_id: ChannelId,
@@ -19,11 +22,14 @@ pub struct Config {
 
   pub user_yoni_id: UserId,
   pub user_mike_id: UserId,
+  pub user_meimeigpt_id: Option<UserId>,
   pub user_monaka_id: Option<UserId>,
 
   pub role_admin_id: RoleId,
   pub role_booster_id: Option<RoleId>,
   pub role_mod_id: RoleId,
+
+  pub sticker_no_digas_hola_id: Option<StickerId>,
 }
 
 impl Config {
@@ -35,6 +41,9 @@ impl Config {
       default_lang: mandatory("DEFAULT_LANG")?,
       database_url: mandatory("DATABASE_URL")?,
 
+      activity: option("ACTIVITY"),
+      no_digas_hola_chance: option_as("NO_DIGAS_HOLA_CHANCE"),
+
       channel_bugs_id: mandatory_as("CHANNEL_BUGS_ID")?,
       channel_comandos_id: mandatory_as("CHANNEL_COMANDOS_ID")?,
       channel_hilos_id: mandatory_as("CHANNEL_HILOS_ID")?,
@@ -44,11 +53,14 @@ impl Config {
 
       user_yoni_id: mandatory_as("USER_YONI_ID")?,
       user_mike_id: mandatory_as("USER_MIKE_ID")?,
+      user_meimeigpt_id: option_as("USER_MEIMEIGPT_ID"),
       user_monaka_id: option_as("USER_MONAKA_ID"),
 
       role_admin_id: mandatory_as("ROLE_ADMIN_ID")?,
       role_booster_id: option_as("ROLE_BOOSTER_ID"),
       role_mod_id: mandatory_as("ROLE_MOD_ID")?,
+
+      sticker_no_digas_hola_id: option_as("STICKER_NO_DIGAS_HOLA_ID"),
     })
   }
 }
