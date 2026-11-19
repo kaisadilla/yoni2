@@ -34,7 +34,7 @@ CREATE TABLE user_stats
   -- The amount of times a message from this user was reacted with a :tomato:
   tomatoes_received INTEGER NOT NULL DEFAULT 0,
   -- The last time this user said something related to shit.
-  last_mierda       INTEGER,
+  last_mierda       INTEGER NOT NULL DEFAULT 1795046400, -- 2026/11/19 00:00:00 UTC+0
   record_mierda     INTEGER NOT NULL DEFAULT 0,
 
   PRIMARY KEY (guild_id, user_id)
