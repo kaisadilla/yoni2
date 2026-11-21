@@ -11,6 +11,7 @@ use poise::serenity_prelude::{
 use rand::seq::IteratorRandom;
 use std::collections::HashSet;
 use std::sync::Arc;
+use tracing::debug;
 use unicode_normalization::UnicodeNormalization;
 use unicode_normalization::char::is_combining_mark;
 
@@ -172,6 +173,8 @@ impl MessageExt for Message {
         urls.insert(&url);
       }
     }
+
+    debug!(?urls, "GIFS found");
 
     urls.into_iter().collect()
   }
