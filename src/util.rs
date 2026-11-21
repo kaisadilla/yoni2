@@ -148,8 +148,8 @@ impl MessageExt for Message {
     // GIFs embedded in external websites.
     for embed in &self.embeds {
       if embed.kind.as_deref() == Some("gifv") {
-        if let Some(video) = &embed.video {
-          urls.insert(&video.url);
+        if let Some(url) = &embed.url {
+          urls.insert(url);
         }
       } else if let Some(img) = &embed.image {
         if is_gif_url(&img.url) {
@@ -173,8 +173,6 @@ impl MessageExt for Message {
         urls.insert(&url);
       }
     }
-
-    debug!(?urls, "GIFS found");
 
     urls.into_iter().collect()
   }
