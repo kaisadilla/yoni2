@@ -36,7 +36,8 @@ async fn block(ctx: CmdContext<'_>, person: Member) -> Result<(), Error> {
     return Ok(());
   }
 
-  if person.is_mod(&ctx, &cfg).await {
+  // Author is trying to block a mod (Kaisa can do this, fuck you all).
+  if person.is_mod(&ctx, &cfg).await && Some(author_id) != cfg.user_kaisa_id {
     ctx.reply(l.t("commands.thread.block.replies.target-is-mod")).await?;
     ctx.tomato_bad_command().await.ok();
 

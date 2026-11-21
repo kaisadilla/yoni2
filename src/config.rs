@@ -24,6 +24,7 @@ pub struct Config {
   pub user_mike_id: UserId,
   pub user_meimeigpt_id: Option<UserId>,
   pub user_monaka_id: Option<UserId>,
+  pub user_kaisa_id: Option<UserId>,
 
   pub role_admin_id: RoleId,
   pub role_booster_id: Option<RoleId>,
@@ -55,6 +56,7 @@ impl Config {
       user_mike_id: mandatory_as("USER_MIKE_ID")?,
       user_meimeigpt_id: option_as("USER_MEIMEIGPT_ID"),
       user_monaka_id: option_as("USER_MONAKA_ID"),
+      user_kaisa_id: option_as("USER_KAISA_ID"),
 
       role_admin_id: mandatory_as("ROLE_ADMIN_ID")?,
       role_booster_id: option_as("ROLE_BOOSTER_ID"),
