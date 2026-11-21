@@ -210,6 +210,45 @@ impl InteractionExt for ComponentInteraction {
   }
 }
 
+pub trait StrExt {
+  /// Adds a backslash before potential Markdown characters (e.g. turns "_" into
+  /// "\_".
+  fn escape_markdown(&self) -> String;
+}
+
+impl<T: AsRef<str> + ?Sized> StrExt for T {
+  fn escape_markdown(&self) -> String {
+    let str = self.as_ref();
+    let mut res = String::with_capacity(str.len());
+
+    for c in str.chars() {
+      if matches!(
+        c,
+        '\\'
+          | '*'
+          | '_'
+          | '~'
+          | '|'
+          | '`'
+          | '>'
+          | '#'
+          | '-'
+          | '['
+          | ']'
+          | '('
+          | ')'
+          | '<'
+          | '#'
+      ) {
+        res.push('\\');
+      }
+      res.push(c);
+    }
+
+    res
+  }
+}
+
 pub trait VecExt<T> {
   fn random(&self) -> Option<&T>;
 }

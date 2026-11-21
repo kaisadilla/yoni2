@@ -1,6 +1,6 @@
 use crate::cmd::checks::check_mod_or_booster;
 use crate::cmd::util::{CmdContext, CmdContextExt};
-use crate::util::Error;
+use crate::util::{Error, StrExt};
 use poise::CreateReply;
 use poise::serenity_prelude::{
   Colour, CreateEmbed, CreateMessage, Mentionable,
@@ -45,7 +45,7 @@ pub async fn say(ctx: CmdContext<'_>, message: String) -> Result<(), Error> {
           .description(l.fmt(
             "commands.say.log.embed.body",
             &[
-              ("user_name", &ctx.author().display_name()),
+              ("user_name", &ctx.author().display_name().escape_markdown()),
               ("user_mention", &ctx.author().id.mention()),
               ("content", &message),
               ("message_link", &msg_id.message().await?.link()),

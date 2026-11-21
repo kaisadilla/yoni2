@@ -1,7 +1,7 @@
 use crate::gif::{Gif, GifPHash, GifStatus};
 use crate::store::Store;
 use crate::util::{
-  Data, GuildChannelExt, Hash, MessageExt, VecExt, strip_diacritics,
+  Data, GuildChannelExt, Hash, MessageExt, StrExt, VecExt, strip_diacritics,
 };
 use ab_glyph::FontArc;
 use image::{ImageFormat, Rgba};
@@ -340,7 +340,8 @@ async fn check_yoni_mention(data: &Data, ctx: &Context, msg: &Message) {
       .as_deref()
       .and_then(|m| m.nick.as_deref())
       .or(msg.author.global_name.as_deref())
-      .unwrap_or(&msg.author.name);
+      .unwrap_or(&msg.author.name)
+      .escape_markdown();
 
     msg
       .reply(

@@ -1,6 +1,6 @@
 use crate::cmd::util::{CmdContext, CmdContextExt};
 use crate::util::Error;
-use poise::serenity_prelude::Member;
+use poise::serenity_prelude::{Member, Mentionable};
 
 #[poise::command(
   slash_command,
@@ -14,12 +14,12 @@ pub async fn bless(ctx: CmdContext<'_>, person: Member) -> Result<(), Error> {
   let reply = if person.user.id == ctx.author().id {
     l.fmt(
       "commands.bless.replies.self-bless",
-      &[("target_id", &person.user.id.to_string())],
+      &[("target_mention", &person.user.mention())],
     )
   } else {
     l.fmt(
       "commands.bless.replies.default",
-      &[("target_id", &person.user.id.to_string())],
+      &[("target_mention", &person.user.mention())],
     )
   };
 

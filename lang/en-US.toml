@@ -67,8 +67,8 @@ Dicho esto, estos son los comandos que tengo disponibles:
  - `/habla`: para que diga algo.
  - `/gif`: para que ponga alguno de mis gifs favoritos.
  - `/record mierda`: consulta el número de días que lleva Mike sin decir cosas relacionadas a cagar y cuál es el récord.
- - `/hilos bloquear`: bloquea a un usuario de los hilos de los que seas autor original en <#{channel_hilos_id}> para que no pueda escribir más ahí.
- - `/hilos desbloquear`: desbloquea a un usuario de los hilos de los que seas autor original en <#{channel_hilos_id}>  para que pueda volver a escribir ahí.
+ - `/hilos bloquear`: bloquea a un usuario de los hilos de los que seas autor original en <#{channel_hilos_mention}> para que no pueda escribir más ahí.
+ - `/hilos desbloquear`: desbloquea a un usuario de los hilos de los que seas autor original en <#{channel_hilos_mention}>  para que pueda volver a escribir ahí.
 """
 
 [commands.bless]
@@ -77,15 +77,15 @@ desc = "Haz que Yoni bendiga a alguien."
 person.name = "persona"
 person.desc = "Persona a la que Yoni va a bendecir."
 replies.default = [
-  "Rigoberta baja del cielo para bendecir a <@{target_id}>.",
-  "<@{target_id}> ha tocado a Mike y le ha curado el retraso mental. ¡Es un milagro! Seguro que alguien l@ ha bendecido...",
-  "Diosito te quiere, <@{target_id}>.",
-  "Que Rigoberta esté contigo, <@{target_id}>."
+  "Rigoberta baja del cielo para bendecir a {target_mention}.",
+  "{target_mention} ha tocado a Mike y le ha curado el retraso mental. ¡Es un milagro! Seguro que alguien l@ ha bendecido...",
+  "Diosito te quiere, {target_mention}.",
+  "Que Rigoberta esté contigo, {target_mention}."
 ]
 replies.self-bless = [
-  "¡Un ángel llamado <@{target_id}> ha bajado del cielo para bendecir a gente! Ostia, se ha bendecido a sí mism@. Menud@ gilipollas.",
-  "¡@ everyone a maldecir a <@{target_id}>! ¡Ha intentado bendecirse a sí mism@! **¡MUERTE AL/A LA BRUJ@!**",
-  "Mira qué mon@ <@{target_id}>. Se bendice a sí mism@. Se piensa que así va a dejar de ser tan retrasad@. En fin."
+  "¡Un ángel llamado {target_mention} ha bajado del cielo para bendecir a gente! Ostia, se ha bendecido a sí mism@. Menud@ gilipollas.",
+  "¡@ everyone a maldecir a {target_mention}! ¡Ha intentado bendecirse a sí mism@! **¡MUERTE AL/A LA BRUJ@!**",
+  "Mira qué mon@ {target_mention}. Se bendice a sí mism@. Se piensa que así va a dejar de ser tan retrasad@. En fin."
 ]
 
 [commands.delete]
@@ -98,18 +98,18 @@ desc = "Haz que Yoni le meta a alguien lo que tiene ahí colgando. ¿Por qué ex
 person.name = "persona"
 person.desc = "Persona a la que Yoni se la va a meter."
 replies.default = [
-  "<@{target_id}> hoy se ha levantado con dolor de culo. Qué casualidad...",
-  "He abierto de patas a <@{target_id}>",
-  "Te la he metido doblada <@{target_id}>",
-  "Hoy <@{target_id}> pierde la virginidad. Ya iba tocando, qué está hecho un vejestorio."
+  "{target_mention} hoy se ha levantado con dolor de culo. Qué casualidad...",
+  "He abierto de patas a {target_mention}",
+  "Te la he metido doblada {target_mention}",
+  "Hoy {target_mention} pierde la virginidad. Ya iba tocando, qué está hecho un vejestorio."
 ]
 replies.mike = [
-  "<@{target_id}> es lesbiano, a ése no se la meten."
+  "{target_mention} es lesbiano, a ése no se la meten."
 ]
 replies.yoni = [
-  "A ese puto de <@{target_id}> hasta el fondo.",
-  "Que te follen <@{target_id}>",
-  "Toma <@{target_id}>, jódete, joputa."
+  "A ese puto de {target_mention} hasta el fondo.",
+  "Que te follen {target_mention}",
+  "Toma {target_mention}, jódete, joputa."
 ]
 
 [commands.games]
@@ -146,6 +146,7 @@ pairs.replies.not-your-turn = [
 ]
 pairs.replies.invalid-card = "Esa carta como que no, ¿eh?"
 pairs.replies.wait = "Pera un momento."
+pairs.replies.info.title = "**{player_mention} vs {opponent_mention}**"
 pairs.replies.info.loading = [
   "Dame un momento que busco los emojis...",
   "Espera, que he vuelto a perder los botones.",

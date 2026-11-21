@@ -1,7 +1,7 @@
 use crate::cmd::util::{CmdContext, CmdContextExt};
 use crate::games::pairs::{Pairs, TurnResult};
 use crate::i18n::Locale;
-use crate::util::{Error, InteractionExt};
+use crate::util::{Error, InteractionExt, StrExt};
 use futures_util::StreamExt;
 use poise::CreateReply;
 use poise::serenity_prelude::{
@@ -81,16 +81,18 @@ async fn pairs(ctx: CmdContext<'_>, opponent: Member) -> Result<(), Error> {
     .author_member()
     .await
     .map(|m| m.display_name().to_owned())
-    .unwrap_or_else(|| ctx.author().name.clone());
-  let opponent_name = opponent.display_name().to_owned();
+    .unwrap_or_else(|| ctx.author().name.clone())
+    .escape_markdown();
+  let opponent_name = opponent.display_name().to_owned().escape_markdown();
 
   let names = [player_name, opponent_name];
 
   let reply = ctx
-    .send(
-      CreateReply::default()
-        .content(l.t("commands.games.pairs.replies.info.loading")),
-    )
+    .send(CreateReply::default().content(format!(
+      "{}\n\n{}",
+      l.t("commands.games.pairs.replies.info.title"),
+      l.t("commands.games.pairs.replies.info.loading")
+    )))
     .await?;
 
   let server_emojis = guild_id.emojis(&ctx).await?;
