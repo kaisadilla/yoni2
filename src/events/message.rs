@@ -482,7 +482,7 @@ async fn check_yoni_channel(data: &Data, ctx: &Context, msg: &Message) {
         continue;
       }
 
-      if let Some(response) = res.response.random() {
+      if let Some(response) = res.response.get(msg.author.id) {
         if res.fragment {
           fragments.push(response);
         } else {
