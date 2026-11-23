@@ -182,12 +182,16 @@ async fn check_usr_is_blocked(
     thread_name = %chan.name,
     msg_id = %msg.id,
     msg_content = %msg.content,
-    "Message from blocked user deleted."
+    "Deleting message from blocked user..."
   );
 
-  msg.delete(&ctx).await.ok();
-
-  true
+  match msg.delete(&ctx).await {
+    Ok(_) => true,
+    Err(error) => {
+      error!(%error, "Failed to delete message.");
+      false
+    },
+  }
 }
 
 /// Acts when the message features GIFs.
